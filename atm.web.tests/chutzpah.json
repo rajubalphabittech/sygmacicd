@@ -1,0 +1,18 @@
+{
+    "Framework": "qunit",
+    "References": [
+        { "Path": "../atm/Scripts/jquery-1.9.1.js" },
+        { "Path": "js/sinon-6.1.5.js" },
+        { "Path": "../atm/Scripts/ajaxhelpers.js" },
+        { "Path": "../atm/Scripts/datehelpers.js" },
+        { "Path": "../atm/Scripts/routecomment.js" },
+        { "Path": "../atm/Scripts/routenotification.js" }
+    ],
+
+    "Tests": [
+        {
+            "Path": "js",
+            "Includes": [ "*.js" ]
+        }
+    ]
+}

@@ -1,0 +1,46 @@
+.GridviewScrollHeader th {
+	padding: 5px; text-align: left; font-weight: bold; vertical-align: bottom; border-right-color: rgb(170, 170, 170); border-bottom-color: rgb(170, 170, 170); border-right-width: 1px; border-bottom-width: 1px; border-right-style: solid; border-bottom-style: solid; white-space: nowrap; background-color: rgb(239, 239, 239);
+}
+.GridviewScrollHeader td {
+	padding: 5px; text-align: left; font-weight: bold; vertical-align: bottom; border-right-color: rgb(170, 170, 170); border-bottom-color: rgb(170, 170, 170); border-right-width: 1px; border-bottom-width: 1px; border-right-style: solid; border-bottom-style: solid; white-space: nowrap; background-color: rgb(239, 239, 239);
+}
+.GridviewScrollHeader-custom th {
+    white-space: nowrap;
+}
+.GridviewScrollItem td {
+	padding: 5px; border-right-color: rgb(170, 170, 170); border-bottom-color: rgb(170, 170, 170); border-right-width: 1px; border-bottom-width: 1px; border-right-style: solid; border-bottom-style: solid; white-space: nowrap; background-color: rgb(255, 255, 255);
+}
+.GridviewScrollItem .Freeze {
+	background-color: rgb(239, 239, 239);
+}
+.GridviewScrollItem .Wrap {
+	white-space: normal; -ms-word-break: break-all;
+}
+.GridviewScrollItemHover td {
+	padding: 5px; border-right-color: rgb(170, 170, 170); border-bottom-color: rgb(170, 170, 170); border-right-width: 1px; border-bottom-width: 1px; border-right-style: solid; border-bottom-style: solid; white-space: nowrap; cursor: pointer; background-color: rgb(204, 204, 204);
+}
+.GridviewScrollItemHover .Freeze {
+	background-color: rgb(204, 204, 204);
+}
+.GridviewScrollItemSelected td {
+	padding: 5px; color: rgb(255, 255, 255); border-right-color: rgb(170, 170, 170); border-bottom-color: rgb(170, 170, 170); border-right-width: 1px; border-bottom-width: 1px; border-right-style: solid; border-bottom-style: solid; white-space: nowrap; background-color: rgb(153, 153, 153);
+}
+.GridviewScrollItemSelected .Freeze {
+	background-color: rgb(153, 153, 153);
+}
+.GridviewScrollPager {
+	border-top-color: rgb(170, 170, 170); border-top-width: 1px; border-top-style: solid; background-color: rgb(255, 255, 255);
+}
+.GridviewScrollPager td {
+	padding-top: 3px; padding-right: 5px; padding-left: 5px; font-size: 14px;
+}
+.GridviewScrollPager a {
+	color: rgb(102, 102, 102);
+}
+.GridviewScrollPager span {
+	font-size: 16px; font-weight: bold;
+}
+.GridviewScrollPager-custom {
+    padding-bottom:20px;
+    margin-bottom:20px;
+}

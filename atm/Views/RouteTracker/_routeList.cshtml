@@ -1,0 +1,312 @@
+﻿@model atm.Models.RouteListViewModel
+@using atm.services.models
+@using atm.Models
+
+@{
+    /**/
+
+    var columnToDisplayInOrder = Model.RouteColumnOption.Columns.Where(c => bool.Parse(c.Visible)).OrderBy(c => int.Parse(c.DisplayOrder));
+}
+
+<table id="routes-table" class="table table-hover table-striped table-bordered table-responsive" style="width:100%">
+    <thead style="background-color:#768a93; color:white;">
+        <tr>
+            @foreach (var col in columnToDisplayInOrder)
+            {
+                switch ((RouteColumns)(int.Parse(col.ID)))
+                {
+                    case RouteColumns.RouteNumber:
+                        <th data-column-id="routeNumber" class="RouteNumber">Route #</th>
+                        break;
+                    case RouteColumns.RouteName:
+                        <th data-column-id="routeName" class="RouteName">Route Name</th>
+                        break;
+                    case RouteColumns.NumberOfStops:
+                        <th data-column-id="stops" class="Stops">Stops</th>
+                        break;
+                    case RouteColumns.ScheduledDispatch:
+                        <th data-column-id="scheduledDispatchTime" class="ScheduledDispatchTime">Scheduled Dispatch Time</th>
+                        break;
+                    case RouteColumns.AdjustedDispatch:
+                        <th data-column-id="adjustedDispatchTime" class="AdjustedDispatchTime" data-toggle="tooltip" title="Any adjustments made to the route/stop just prior to, or after dispatch, such as delays from traffic, weather, or driver availability.">Adjusted Dispatch Time</th>
+                        break;
+                    case RouteColumns.Concepts:
+                        <th data-column-id="concepts" class="Concepts">Concepts</th>
+                        break;
+                    case RouteColumns.WeightTotal:
+                        <th data-column-id="total-weight" class="LBs">LBs</th>
+                        break;
+                    case RouteColumns.WeightFreezer:
+                        <th data-column-id="total-weight-freezer" class="FreezerLBs">Freezer LBs</th>
+                        break;
+                    case RouteColumns.WeightCooler:
+                        <th data-column-id="total-weight-cooler" class="CoolerLBs">Cooler LBs</th>
+                        break;
+                    case RouteColumns.WeightDry:
+                        <th data-column-id="total-weight-dry" class="DryLBs">Dry LBs</th>
+                        break;
+                    case RouteColumns.CasesTotal:
+                        <th data-column-id="total-cases" class="Cases">Cases</th>
+                        break;
+                    case RouteColumns.CasesFreezer:
+                        <th data-column-id="total-cases-freezer" class="FreezerCases">Freezer Cases</th>
+                        break;
+                    case RouteColumns.CasesCooler:
+                        <th data-column-id="total-cases-cooler" class="CoolerCases">Cooler Cases</th>
+                        break;
+                    case RouteColumns.CasesDry:
+                        <th data-column-id="total-cases-dry" class="DryCases">Dry Cases</th>
+                        break;
+                    case RouteColumns.CubesTotal:
+                        <th data-column-id="total-cubes" class="Cubes">Cubes</th>
+                        break;
+                    case RouteColumns.CubesFreezer:
+                        <th data-column-id="total-cubes-freezer" class="FreezerCubes">Freezer Cubes</th>
+                        break;
+                    case RouteColumns.CubesCooler:
+                        <th data-column-id="total-cubes-cooler" class="CoolerCubes">Cooler Cubes</th>
+                        break;
+                    case RouteColumns.CubesDry:
+                        <th data-column-id="total-cubes-dry" class="DryCubes">Dry Cubes</th>
+                        break;
+                    case RouteColumns.PrimaryDriverName:
+                        <th data-column-id="primaryDriverName">Primary Driver</th>
+                        break;
+                    case RouteColumns.SecondaryDriverName:
+                        <th data-column-id="secondaryDriverName">Secondary Driver</th>
+                        break;
+                    case RouteColumns.HelperName:
+                        <th data-column-id="helperName">Team Driver/Helper</th>
+                        break;
+                    case RouteColumns.TruckId:
+                        <th data-column-id="truckId">Truck Id</th>
+                        break;
+                    case RouteColumns.TrailerId:
+                        <th data-column-id="trailerId">Trailer Id</th>
+                        break;
+                }
+            }
+            <th data-column-id="editColumn"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            var index = 0;
+            var routes = Model.OrderBy(m => m.RouteNumber).ToList();
+            while (index < routes.Count())
+            {
+                var route = routes[index];
+
+                var conceptIdList = string.Join(",", route.ConceptIds);
+                var conceptNameList = string.Join(", ", route.Concepts);
+
+                <tr data-id="@(route.RouteNumber + '-' + route.SygmaCenterNo.ToString())"
+                    data-route-id="@(route.RouteId.ToString())"
+                    data-number=" @route.RouteNumber.ToLower()"
+                    data-name="@route.RouteName.ToLower()"
+                    data-center="@route.SygmaCenterNo.ToString()"
+                    data-route-modified="@route.RouteWasModified.ToString()"
+                    data-route-added-stops="@route.RouteHasStopAdditions.ToString()"
+                    data-route-removed-stops="@route.RouteHasStopRemovals.ToString()"
+                    data-route-time-changes="@route.RouteHasStopTimeChanges.ToString()"
+                    data-route-dispatch-time="@route.AdjustedDispatchTime.ToString()"
+                    data-route-concepts='@conceptIdList'
+                    data-route-concept-names='@conceptNameList'
+                    data-route-number-of-stops='@route.NumberOfStops'
+                    data-route-is-early-late='@route.IsEarlyOrLate'
+                    data-route-has-order='@((int)route.HasOrders)'
+                    name="route-row">
+
+                    @foreach (var col in columnToDisplayInOrder)
+                    {
+                        switch ((RouteColumns)(int.Parse(col.ID)))
+                        {
+                            case RouteColumns.RouteNumber:
+                                <td class="RouteNumber">
+                                    @if (route.HasOrders == atm.services.models.RouteOrders.RouteHasNoOrders)
+                                    {
+                                        <i class="fa fa-first-order fa-2x" style="color: red;" aria-hidden="true" title="ROUTE NO ORDERS ASSOCIATED WITH IT"></i>
+                                    }
+                                    else
+                                    {
+                                        if (route.IsEarlyOrLate == 1)
+                                        {
+                                            <i class="fa fa-exclamation-circle fa-2x" style="color: red;" aria-hidden="true" title="ROUTE CURRENTLY RUNNING LATE"></i>
+                                        }
+                                        else if (route.IsEarlyOrLate == -1)
+                                        {
+                                            <i class="fa fa-clock-o fa-2x" aria-hidden="true" title="ROUTE CURRENTLY RUNNING EARLY"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-check-circle fa-2x" aria-hidden="true" title="ROUTE CURRENTLY RUNNING ON-TIME"></i>
+                                        }
+                                    }
+                                    &nbsp;&nbsp;
+                                    @route.RouteNumber <span id="@("RouteNumberTotalNumberOfOrdersVsTotalStops_" + route.RouteId)">(@route.NumberOfOrders/@route.NumberOfStops orders)</span>
+                                </td>
+                                break;
+                            case RouteColumns.RouteName:
+                                <td class="RouteName">@route.RouteName</td>
+                                break;
+                            case RouteColumns.NumberOfStops:
+                                <td class="Stops">@route.NumberOfStops</td>
+                                break;
+                            case RouteColumns.ScheduledDispatch:
+                                <td id="@("ScheduledDispatchTime_" + route.RouteId)" class="ScheduledDispatchTime">
+                                    @Convert.ToDateTime(route.ScheduledDispatchTime).ToString("MM/dd/yy hh:mm tt")
+                                </td>
+                                break;
+                            case RouteColumns.AdjustedDispatch:
+                                <td id="@("AdjustedDispatchTime_" + route.RouteId)" class="AdjustedDispatchTime">
+                                    @Convert.ToDateTime(route.AdjustedDispatchTime).ToString("MM/dd/yy hh:mm tt")
+                                </td>
+                                break;
+                            case RouteColumns.Concepts:
+                                <td class="maxWidthGridColumn-med-wrapping Concepts">
+                                    @{
+                                        var conceptListString = "";
+                                        int conceptCounter = 0;
+                                        while (conceptCounter < route.Concepts.Count())
+                                        {
+                                            conceptListString += route.Concepts.ElementAt(conceptCounter);
+                                            conceptCounter++;
+                                            if (conceptCounter < route.Concepts.Count())
+                                            {
+                                                conceptListString += ", ";
+                                            }
+                                        }
+                                    }
+                                    @conceptListString
+                                </td>
+                                break;
+                            case RouteColumns.WeightTotal:
+                                <td class="LBs">
+                                    @string.Format("{0:#,0}", route.TotalWeight)
+                                </td>
+                                break;
+                            case RouteColumns.WeightFreezer:
+                                <td class="FreezerLBs">
+                                    @string.Format("{0:#,0}", route.TotalWeightFreezer)
+                                </td>
+                                break;
+                            case RouteColumns.WeightCooler:
+                                <td class="CoolerLBs">
+                                    @string.Format("{0:#,0}", route.TotalWeightCooler)
+                                </td>
+                                break;
+                            case RouteColumns.WeightDry:
+                                <td class="DryLBs">
+                                    @string.Format("{0:#,0}", route.TotalWeightDry)
+                                </td>
+                                break;
+                            case RouteColumns.CasesTotal:
+                                <td class="Cases">
+                                    @string.Format("{0:#,0}", route.TotalCases)
+                                </td>
+                                break;
+                            case RouteColumns.CasesFreezer:
+                                <td class="FreezerCases">
+                                    @string.Format("{0:#,0}", route.TotalCasesFreezer)
+                                </td>
+                                break;
+                            case RouteColumns.CasesCooler:
+                                <td class="CoolerCases">
+                                    @string.Format("{0:#,0}", route.TotalCasesCooler)
+                                </td>
+                                break;
+                            case RouteColumns.CasesDry:
+                                <td class="DryCases">
+                                    @string.Format("{0:#,0}", route.TotalCasesDry)
+                                </td>
+                                break;
+                            case RouteColumns.CubesTotal:
+                                <td class="Cubes">
+                                    @string.Format("{0:#,0}", route.TotalCubes)
+                                </td>
+                                break;
+                            case RouteColumns.CubesFreezer:
+                                <td class="FreezerCubes">
+                                    @string.Format("{0:#,0}", route.TotalCubesFreezer)
+                                </td>
+                                break;
+                            case RouteColumns.CubesCooler:
+                                <td class="CoolerCubes">
+                                    @string.Format("{0:#,0}", route.TotalCubesCooler)
+                                </td>
+                                break;
+                            case RouteColumns.CubesDry:
+                                <td class="DryCubes">
+                                    @string.Format("{0:#,0}", route.TotalCubesDry)
+                                </td>
+                                break;
+                            case RouteColumns.PrimaryDriverName:
+                                <td class="primaryDriverName">
+                                    @route.PrimaryDriverName
+                                </td>
+                                break;
+                            case RouteColumns.SecondaryDriverName:
+                                <td class="secondaryDriverName">
+                                    @route.SecondaryDriverName
+                                </td>
+                                break;
+                            case RouteColumns.HelperName:
+                                <td class="helperName">
+                                    @route.HelperName
+                                </td>
+                                break;
+                            case RouteColumns.TruckId:
+                                <td class="truckId">
+                                    @route.TruckId
+                                </td>
+                                break;
+                            case RouteColumns.TrailerId:
+                                <td class="trailerid">
+                                    @route.TrailerId
+                                </td>
+                                break;
+                        }
+                    }
+                    <td class="button-container" id="button-container-@route.RouteId.ToString()">
+                        <a href="javascript:void(0)" class="show-hide-stops" data-route-id="@(route.RouteId)" data-center-number="@route.SygmaCenterNo" data-id="@(route.RouteId.ToString())">
+                            <i class="fa fa-plus fa-2x pull-right" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0)" class="route-comment-readonly-dialog-trigger" data-route-id="@(route.RouteId)" data-center-number="@route.SygmaCenterNo" data-route-number="@route.RouteNumber">
+                            <i class="fa fa-comments  fa-2x pull-right" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr data-number="@route.RouteNumber.ToLower()"
+                    data-route-id="@(route.RouteId.ToString())"
+                    data-name="@route.RouteName.ToLower()"
+                    data-route-modified="@route.RouteWasModified.ToString()"
+                    class="hidden"
+                    data-route-added-stops="@route.RouteHasStopAdditions.ToString()"
+                    data-route-removed-stops="@route.RouteHasStopRemovals.ToString()"
+                    data-route-time-changes="@route.RouteHasStopTimeChanges.ToString()"
+                    data-route-dispatch-time="@route.AdjustedDispatchTime.ToString()"
+                    data-route-concepts='@conceptIdList'
+                    data-route-concept-names='@conceptNameList'
+                    data-route-number-of-stops='@route.NumberOfStops'
+                    data-route-is-early-late='@route.IsEarlyOrLate'
+                    data-route-has-order='@((int)route.HasOrders)'>
+                    <td colspan="100">
+                        <div class="stop-list" data-route-id="@(route.RouteId.ToString())"></div>
+                        <div class="loading-cover">
+                            <i class='fa fa-spinner fa-spin fa-5x loading' aria-hidden='true'></i>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="hidden"></tr>
+                index = index + 1;
+            }
+        }
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+

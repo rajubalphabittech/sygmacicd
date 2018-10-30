@@ -1,0 +1,42 @@
+﻿@model IEnumerable<atm.Models.RouteAggregateCommentViewModel>
+@using atm.Controllers
+<table class="comment-table">
+	<tr>
+		<th>
+			<div style='clear:both;'>
+				<span style='font-weight: bold;'>STOP</span>
+			</div>
+		</th>
+		<th>
+			<div style='clear:both;'>
+				<span style='font-weight: bold;'>COMMENT</span>
+			</div>
+		</th>
+		<th>
+			<div style='clear:both;'>
+				<span style='font-weight: bold;'>CATEGORY</span>
+			</div>
+		</th>
+	</tr>
+	@foreach (var stopComment in Model)
+	{
+		for (var i = 0; i < stopComment.Comments.Count; i++)
+		{
+			var comment = stopComment.Comments[i];
+			<tr class="stop-comment-row" data-stop-number="@stopComment.StopNumber" data-route-plan-id="@stopComment.RoutePlanId">
+				<td class="stop-number">
+					@(i == 0 ? stopComment.StopNumber.ToString() : "")
+				</td>
+				<td class="stop-comment">
+					<div style='height: 18px; clear:both;'>
+						<span style='font-size: 8pt; font-weight: bold;'>[@comment.CreatedDate_MMDDHHMM] @comment.CreatedBy: @(comment.Status == 1 ? "[INTERNAL]" : "")</span>
+					</div>
+					@comment.LongComment
+				</td>
+				<td class="stop-comment-category">
+					@comment.ShortComment
+				</td>
+			</tr>
+		}
+	}
+</table>

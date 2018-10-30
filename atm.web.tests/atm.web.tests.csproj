@@ -1,0 +1,337 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\MSTest.TestAdapter.1.3.2\build\net45\MSTest.TestAdapter.props" Condition="Exists('..\packages\MSTest.TestAdapter.1.3.2\build\net45\MSTest.TestAdapter.props')" />
+  <Import Project="..\..\packages\MSTest.TestAdapter.1.1.11\build\net45\MSTest.TestAdapter.props" Condition="Exists('..\..\packages\MSTest.TestAdapter.1.1.11\build\net45\MSTest.TestAdapter.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5B1F2B4C-B9AE-4541-87B0-95EAAEAA22BA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>atm.web.tests</RootNamespace>
+    <AssemblyName>atm.web.tests</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">15.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'dev|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\dev\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug QA|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug QA\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FluentAssertions, Version=5.4.1.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentAssertions.5.4.1\lib\net45\FluentAssertions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MSTest.TestFramework.1.3.2\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MSTest.TestFramework.1.3.2\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SeleniumExtras.WaitHelpers, Version=3.11.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetSeleniumExtras.WaitHelpers.3.11.0\lib\net45\SeleniumExtras.WaitHelpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\Microsoft\Microsoft.NET.Build.Extensions\net461\lib\System.Net.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="TechTalk.SpecFlow, Version=2.4.0.0, Culture=neutral, PublicKeyToken=0778194805d6db41, processorArchitecture=MSIL">
+      <HintPath>..\packages\SpecFlow.2.4.0\lib\net45\TechTalk.SpecFlow.dll</HintPath>
+    </Reference>
+    <Reference Include="WebDriver, Version=3.14.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Selenium.WebDriver.3.14.0\lib\net45\WebDriver.dll</HintPath>
+    </Reference>
+    <Reference Include="WebDriver.Support, Version=3.14.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Selenium.Support.3.14.0\lib\net45\WebDriver.Support.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="common\DbHelper.cs" />
+    <Compile Include="common\DisposeDriverService.cs" />
+    <Compile Include="common\WebDriverElementExtensions.cs" />
+    <Compile Include="common\Selectors.cs" />
+    <Compile Include="common\TestDataHelper.cs" />
+    <Compile Include="common\WebDriverWaitExtensions.cs" />
+    <Compile Include="features\RMSearchFilter.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RMSearchFilter.feature</DependentUpon>
+    </Compile>
+    <Compile Include="features\RouteDetails.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RouteDetails.feature</DependentUpon>
+    </Compile>
+    <Compile Include="features\RouteNotification.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RouteNotification.feature</DependentUpon>
+    </Compile>
+    <Compile Include="features\ActivityLog.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ActivityLog.feature</DependentUpon>
+    </Compile>
+    <Compile Include="features\RTColumnOptions.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RTColumnOptions.feature</DependentUpon>
+    </Compile>
+    <Compile Include="features\RTSearchFilter.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RTSearchFilter.feature</DependentUpon>
+    </Compile>
+    <Compile Include="features\StopMove.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StopMove.feature</DependentUpon>
+    </Compile>
+    <Compile Include="features\RouteManager.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RouteManager.feature</DependentUpon>
+    </Compile>
+    <Compile Include="features\CreateViewPayRatesAndScalesPage.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CreateViewPayRatesAndScalesPage.feature</DependentUpon>
+    </Compile>
+    <Compile Include="features\CoreRegression.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CoreRegression.feature</DependentUpon>
+    </Compile>
+    <Compile Include="features\ManageVehiclesAddTrailersShowAllCenters.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ManageVehiclesAddTrailersShowAllCenters.feature</DependentUpon>
+    </Compile>
+    <Compile Include="features\PayrollFormsPageRegression.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PayrollFormsPageRegression.feature</DependentUpon>
+    </Compile>
+    <Compile Include="features\RouteTracker.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RouteTracker.feature</DependentUpon>
+    </Compile>
+    <Compile Include="pages\ManageEmployeesPage\ManageEmployeesPage.Assertions.cs" />
+    <Compile Include="pages\ManageEmployeesPage\ManageEmployeesPage.cs" />
+    <Compile Include="pages\ManageEmployeesPage\ManageEmployeesPage.Elements.cs" />
+    <Compile Include="pages\ManageRoutesPage\ManageRoutesPage.Assertions.cs" />
+    <Compile Include="pages\ManageRoutesPage\ManageRoutesPage.cs" />
+    <Compile Include="pages\ManageRoutesPage\ManageRoutesPage.Elements.cs" />
+    <Compile Include="pages\ManageVehiclesAndTrailersPage\ManageVehiclesAndTrailersPage.Assertions.cs" />
+    <Compile Include="pages\ManageVehiclesAndTrailersPage\ManageVehiclesAndTrailersPage.cs" />
+    <Compile Include="pages\ManageVehiclesAndTrailersPage\ManageVehiclesAndTrailersPage.Elements.cs" />
+    <Compile Include="pages\PayrollFormPage\PayrollFormPage.Assertions.cs" />
+    <Compile Include="pages\PayrollFormPage\PayrollFormPage.cs" />
+    <Compile Include="pages\PayrollFormPage\PayrollFormPage.Elements.cs" />
+    <Compile Include="pages\PayrollFormsPage\PayrollFormsPage.Assertions.cs" />
+    <Compile Include="pages\RouteManagerPage\RouteManagerPage.Assertions.cs" />
+    <Compile Include="pages\RouteManagerPage\RouteManagerPage.cs" />
+    <Compile Include="pages\RouteManagerPage\RouteManagerPage.Elements.cs" />
+    <Compile Include="pages\RouteNotificationPage\RouteNotificationPage.Assertions.cs" />
+    <Compile Include="pages\RouteNotificationPage\RouteNotificationPage.Elements.cs" />
+    <Compile Include="pages\RouteNotificationPage\RouteNotificationPage.cs" />
+    <Compile Include="pages\RouteTrackerPage\RouteTrackerPage.Assertions.cs" />
+    <Compile Include="pages\RouteTrackerPage\RouteTrackerPage.cs" />
+    <Compile Include="pages\RouteTrackerPage\RouteTrackerPage.Elements.cs" />
+    <Compile Include="pages\UserMaintenancePage\UserMaintenancePage.Assertions.cs" />
+    <Compile Include="pages\UserMaintenancePage\UserMaintenancePage.Elements.cs" />
+    <Compile Include="pages\UserMaintenancePage\UserMaintenancePage.cs" />
+    <Compile Include="pages\ViewEmployeesPage\ViewEmployeesPage..Assertions.cs" />
+    <Compile Include="pages\ViewEmployeesPage\ViewEmployeesPage.Elements.cs" />
+    <Compile Include="pages\ViewEmployeesPage\ViewEmployeesPage.cs" />
+    <Compile Include="pages\ViewPayScalesPage\ViewPayScalesPage..Assertions.cs" />
+    <Compile Include="pages\ViewPayScalesPage\ViewPayScalesPage.Elements.cs" />
+    <Compile Include="pages\ViewPayScalesPage\ViewPayScalesPage.cs" />
+    <Compile Include="steps\ColumnOptionsSteps.cs" />
+    <Compile Include="steps\common\BaseSteps.cs" />
+    <Compile Include="common\BasePage.cs" />
+    <Compile Include="common\BaseTest.cs" />
+    <Compile Include="common\StartStopWebApplication.cs" />
+    <Compile Include="common\BrowserTypes.cs" />
+    <Compile Include="common\Driver.cs" />
+    <Compile Include="steps\common\NavigationSteps.cs" />
+    <Compile Include="Hooks.cs" />
+    <Compile Include="pages\PayrollFormsPage\PayrollFormsPage.cs" />
+    <Compile Include="pages\PayrollFormsPage\PayrollFormsPage.Elements.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="features\PayrollFormsColumnOptions.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PayrollFormsColumnOptions.feature</DependentUpon>
+    </Compile>
+    <Compile Include="steps\common\VerificationSteps.cs" />
+    <Compile Include="steps\ManageEmployeesPageSteps.cs" />
+    <Compile Include="steps\ManageRoutesPageSteps.cs" />
+    <Compile Include="steps\ManageVehiclesAndTrailersPageSteps.cs" />
+    <Compile Include="steps\PayrollFormPageSteps.cs" />
+    <Compile Include="steps\PayrollFormsPageSteps.cs" />
+    <Compile Include="steps\RouteDetailsModalSteps.cs" />
+    <Compile Include="steps\RouteManagerPageSteps.cs" />
+    <Compile Include="steps\RouteNavigationPageSteps.cs" />
+    <Compile Include="steps\ActivityLogSteps.cs" />
+    <Compile Include="steps\RouteTrackerPageSteps.cs" />
+    <Compile Include="steps\UserMaintenancePageSteps.cs" />
+    <Compile Include="steps\ViewPayScalesPageSteps.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="chutzpah.json" />
+    <None Include="features\RMSearchFilter.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>RMSearchFilter.feature.cs</LastGenOutput>
+    </None>
+    <None Include="features\RouteDetails.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>RouteDetails.feature.cs</LastGenOutput>
+    </None>
+    <None Include="features\RouteNotification.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>RouteNotification.feature.cs</LastGenOutput>
+    </None>
+    <None Include="features\ActivityLog.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ActivityLog.feature.cs</LastGenOutput>
+    </None>
+    <None Include="features\RTColumnOptions.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>RTColumnOptions.feature.cs</LastGenOutput>
+    </None>
+    <None Include="features\RTSearchFilter.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>RTSearchFilter.feature.cs</LastGenOutput>
+    </None>
+    <None Include="features\StopMove.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>StopMove.feature.cs</LastGenOutput>
+    </None>
+    <None Include="features\RouteManager.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>RouteManager.feature.cs</LastGenOutput>
+    </None>
+    <None Include="features\CreateViewPayRatesAndScalesPage.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>CreateViewPayRatesAndScalesPage.feature.cs</LastGenOutput>
+    </None>
+    <None Include="features\CoreRegression.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>CoreRegression.feature.cs</LastGenOutput>
+    </None>
+    <None Include="features\ManageVehiclesAddTrailersShowAllCenters.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ManageVehiclesAddTrailersShowAllCenters.feature.cs</LastGenOutput>
+    </None>
+    <None Include="features\PayrollFormsColumnOptions.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PayrollFormsColumnOptions.feature.cs</LastGenOutput>
+    </None>
+    <None Include="features\PayrollFormsPageRegression.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PayrollFormsPageRegression.feature.cs</LastGenOutput>
+    </None>
+    <None Include="features\RouteTracker.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>RouteTracker.feature.cs</LastGenOutput>
+    </None>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\atm.services\atm.services.csproj">
+      <Project>{07B6C043-3D5C-4E3F-91D4-01AE2FBAC326}</Project>
+      <Name>atm.services</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="js\ajaxhelper_tests.js" />
+    <Content Include="js\routecomment_tests.js" />
+    <Content Include="js\datehelpers_tests.js" />
+    <Content Include="js\sinon-6.1.5.js" />
+  </ItemGroup>
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\..\packages\Selenium.WebDriver.ChromeDriver.2.29.0\build\Selenium.WebDriver.ChromeDriver.targets" Condition="Exists('..\..\packages\Selenium.WebDriver.ChromeDriver.2.29.0\build\Selenium.WebDriver.ChromeDriver.targets')" />
+  <Import Project="..\..\packages\Selenium.WebDriver.IEDriver.3.4.0\build\Selenium.WebDriver.IEDriver.targets" Condition="Exists('..\..\packages\Selenium.WebDriver.IEDriver.3.4.0\build\Selenium.WebDriver.IEDriver.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\SpecFlow.2.4.0\build\SpecFlow.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SpecFlow.2.4.0\build\SpecFlow.targets'))" />
+    <Error Condition="!Exists('..\packages\Selenium.WebDriver.ChromeDriver.2.40.0\build\Selenium.WebDriver.ChromeDriver.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Selenium.WebDriver.ChromeDriver.2.40.0\build\Selenium.WebDriver.ChromeDriver.targets'))" />
+    <Error Condition="!Exists('..\packages\Selenium.WebDriver.IEDriver.3.14.0\build\Selenium.WebDriver.IEDriver.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Selenium.WebDriver.IEDriver.3.14.0\build\Selenium.WebDriver.IEDriver.targets'))" />
+    <Error Condition="!Exists('..\packages\Selenium.WebDriver.MicrosoftDriver.15.15063.0\build\Selenium.WebDriver.MicrosoftDriver.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Selenium.WebDriver.MicrosoftDriver.15.15063.0\build\Selenium.WebDriver.MicrosoftDriver.targets'))" />
+    <Error Condition="!Exists('..\packages\MSTest.TestAdapter.1.3.2\build\net45\MSTest.TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestAdapter.1.3.2\build\net45\MSTest.TestAdapter.props'))" />
+    <Error Condition="!Exists('..\packages\MSTest.TestAdapter.1.3.2\build\net45\MSTest.TestAdapter.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestAdapter.1.3.2\build\net45\MSTest.TestAdapter.targets'))" />
+  </Target>
+  <Import Project="..\packages\SpecFlow.2.4.0\build\SpecFlow.targets" Condition="Exists('..\packages\SpecFlow.2.4.0\build\SpecFlow.targets')" />
+  <Import Project="..\packages\Selenium.WebDriver.ChromeDriver.2.40.0\build\Selenium.WebDriver.ChromeDriver.targets" Condition="Exists('..\packages\Selenium.WebDriver.ChromeDriver.2.40.0\build\Selenium.WebDriver.ChromeDriver.targets')" />
+  <Import Project="..\packages\Selenium.WebDriver.IEDriver.3.14.0\build\Selenium.WebDriver.IEDriver.targets" Condition="Exists('..\packages\Selenium.WebDriver.IEDriver.3.14.0\build\Selenium.WebDriver.IEDriver.targets')" />
+  <Import Project="..\packages\Selenium.WebDriver.MicrosoftDriver.15.15063.0\build\Selenium.WebDriver.MicrosoftDriver.targets" Condition="Exists('..\packages\Selenium.WebDriver.MicrosoftDriver.15.15063.0\build\Selenium.WebDriver.MicrosoftDriver.targets')" />
+  <Import Project="..\packages\MSTest.TestAdapter.1.3.2\build\net45\MSTest.TestAdapter.targets" Condition="Exists('..\packages\MSTest.TestAdapter.1.3.2\build\net45\MSTest.TestAdapter.targets')" />
+</Project>

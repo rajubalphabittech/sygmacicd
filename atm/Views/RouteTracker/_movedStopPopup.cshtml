@@ -1,0 +1,623 @@
+﻿@model atm.Models.MovedStopPopupRouteStopViewModel
+@using atm.services.models
+@using atm.Models
+
+<style>
+    .date-boxes {
+        width: 120px;
+        padding: 2px 4px;
+    }
+
+    .cascade-changes {
+    }
+
+    td {
+        vertical-align: top;
+    }
+
+    th {
+        padding-left: 10px !important;
+    }
+
+    textarea {
+        resize: none;
+    }
+
+    .route-stop-time-adjusted {
+        background-color: #f9f1d6 !important;
+    }
+
+    .route-stop-time-scheduled {
+        background-color: #f9f1d6 !important;
+    }
+
+    .stop-number-spinner {
+        text-align: center;
+        width: 45px;
+    }
+
+    .stop-number-duplicate {
+        background-color: yellow;
+    }
+</style>
+
+@{
+    var columnToDisplayInOrder = Model.StopColumnOption.Columns.Where(c => bool.Parse(c.Visible)).OrderBy(c => int.Parse(c.DisplayOrder));
+    var routeColumnToDisplayInOrder = Model.RouteColumnOption.Columns.Where(c => bool.Parse(c.Visible)).OrderBy(c => int.Parse(c.DisplayOrder));
+}
+
+<div class="modal-header">
+    <div class="row">
+        <div class="col-xs-10 col-s-10 col-md-10 col-lg-10" id="MovedStopRouteDialogTitle">
+            <h3>Route Details for Route @Model.RouteNumber - @Model.RouteName</h3>
+        </div>
+        <div class="col-xs-2 col-s-2 col-md-2 col-lg-2">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+</div>
+<div class="modal-body modal-stop-dialog-content">
+    <table id="routes-table-popup" class="table table-hover table-striped table-bordered table-responsive" style="width:100%">
+        <thead style="background-color:#768a93; color:white;">
+            <tr>
+                @foreach (var col in routeColumnToDisplayInOrder)
+                {
+                    switch ((RouteColumns)(int.Parse(col.ID)))
+                    {
+                        case RouteColumns.RouteNumber:
+                            <th data-column-id="routeNumber" class="RouteNumber">Route #</th>
+                            break;
+                        case RouteColumns.RouteName:
+                            <th data-column-id="routeName" class="RouteName">Route Name</th>
+                            break;
+                        case RouteColumns.NumberOfStops:
+                            <th data-column-id="stops" class="Stops">Stops</th>
+                            break;
+                        case RouteColumns.ScheduledDispatch:
+                            <th data-column-id="scheduledDispatchTime" class="ScheduledDispatchTime">Scheduled Dispatch Time</th>
+                            break;
+                        case RouteColumns.AdjustedDispatch:
+                            <th data-column-id="adjustedDispatchTime" class="AdjustedDispatchTime" data-toggle="tooltip" title="Any adjustments made to the route/stop just prior to, or after dispatch, such as delays from traffic, weather, or driver availability.">Adjusted Dispatch Time</th>
+                            break;
+                        case RouteColumns.Concepts:
+                            <th data-column-id="concepts" class="Concepts">Concepts</th>
+                            break;
+                        case RouteColumns.WeightTotal:
+                            <th data-column-id="total-weight" class="LBs">LBs</th>
+                            break;
+                        case RouteColumns.WeightFreezer:
+                            <th data-column-id="total-weight-freezer" class="FreezerLBs">Freezer LBs</th>
+                            break;
+                        case RouteColumns.WeightCooler:
+                            <th data-column-id="total-weight-cooler" class="CoolerLBs">Cooler LBs</th>
+                            break;
+                        case RouteColumns.WeightDry:
+                            <th data-column-id="total-weight-dry" class="DryLBs">Dry LBs</th>
+                            break;
+                        case RouteColumns.CasesTotal:
+                            <th data-column-id="total-cases" class="Cases">Cases</th>
+                            break;
+                        case RouteColumns.CasesFreezer:
+                            <th data-column-id="total-cases-freezer" class="FreezerCases">Freezer Cases</th>
+                            break;
+                        case RouteColumns.CasesCooler:
+                            <th data-column-id="total-cases-cooler" class="CoolerCases">Cooler Cases</th>
+                            break;
+                        case RouteColumns.CasesDry:
+                            <th data-column-id="total-cases-dry" class="DryCases">Dry Cases</th>
+                            break;
+                        case RouteColumns.CubesTotal:
+                            <th data-column-id="total-cubes" class="Cubes">Cubes</th>
+                            break;
+                        case RouteColumns.CubesFreezer:
+                            <th data-column-id="total-cubes-freezer" class="FreezerCubes">Freezer Cubes</th>
+                            break;
+                        case RouteColumns.CubesCooler:
+                            <th data-column-id="total-cubes-cooler" class="CoolerCubes">Cooler Cubes</th>
+                            break;
+                        case RouteColumns.CubesDry:
+                            <th data-column-id="total-cubes-dry" class="DryCubes">Dry Cubes</th>
+                            break;
+                    }
+                }
+                <th data-column-id="editColumn"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var conceptIdList = string.Join(", ", Model.ConceptIds);
+                var conceptNameList = string.Join(", ", Model.Concepts);
+
+
+                <tr data-id="@(Model.RouteNumber + '-' + Model.SygmaCenterNo.ToString())"
+                    data-route-id="@(Model.RouteId.ToString())"
+                    data-number=" @Model.RouteNumber.ToLower()"
+                    data-name="@Model.RouteName.ToLower()"
+                    data-center="@Model.SygmaCenterNo.ToString()"
+                    data-route-modified="@Model.RouteWasModified.ToString()"
+                    data-route-added-stops="@Model.RouteHasStopAdditions.ToString()"
+                    data-route-removed-stops="@Model.RouteHasStopRemovals.ToString()"
+                    data-route-time-changes="@Model.RouteHasStopTimeChanges.ToString()"
+                    data-route-dispatch-time="@Model.DispatchTime.ToString()"
+                    data-route-concepts='@conceptIdList'
+                    data-route-concept-names='@conceptNameList'
+                    data-route-number-of-stops='@Model.Stops.Count'
+                    name="route-row">
+
+
+
+                    @foreach (var col in routeColumnToDisplayInOrder)
+                    {
+                        switch ((RouteColumns)(int.Parse(col.ID)))
+                        {
+                            case RouteColumns.RouteNumber:
+                                <td class="RouteNumber">@Model.RouteNumber</td>
+                                break;
+                            case RouteColumns.RouteName:
+                                <td class="RouteName">@Model.RouteName</td>
+                                break;
+                            case RouteColumns.NumberOfStops:
+                                <td class="Stops">@Model.Stops.Count</td>
+                                break;
+                            case RouteColumns.ScheduledDispatch:
+                                <td id="@("ScheduledDispatchTime_" + Model.RouteId)" class="ScheduledDispatchTime">
+                                    @Convert.ToDateTime(Model.ScheduledDispatchTime).ToString("MM/dd/yy hh:mm tt")
+                                </td>
+                                break;
+                            case RouteColumns.AdjustedDispatch:
+                                <td id="@("AdjustedDispatchTime_" + Model.RouteId)" class="AdjustedDispatchTime">
+                                    @Convert.ToDateTime(Model.DispatchTime).ToString("MM/dd/yy hh:mm tt")
+                                </td>
+                                break;
+                            case RouteColumns.Concepts:
+                                <td class="maxWidthGridColumn-med-wrapping Concepts">
+                                    @{
+                                        var conceptListString = "";
+                                        int conceptCounter = 0;
+                                        while (conceptCounter < Model.Concepts.Count())
+                                        {
+                                            conceptListString += Model.Concepts.ElementAt(conceptCounter);
+                                            conceptCounter++;
+                                            if (conceptCounter < Model.Concepts.Count())
+                                            {
+                                                conceptListString += ", ";
+                                            }
+                                        }
+                                    }
+                                    @conceptListString
+                                </td>
+                                break;
+                            case RouteColumns.WeightTotal:
+                                <td class="LBs">
+                                    @string.Format("{0:#,0}", Model.TotalWeight)
+                                </td>
+                                break;
+                            case RouteColumns.WeightFreezer:
+                                <td class="FreezerLBs">
+                                    @string.Format("{0:#,0}", Model.TotalWeightFreezer)
+                                </td>
+                                break;
+                            case RouteColumns.WeightCooler:
+                                <td class="CoolerLBs">
+                                    @string.Format("{0:#,0}", Model.TotalWeightCooler)
+                                </td>
+                                break;
+                            case RouteColumns.WeightDry:
+                                <td class="DryLBs">
+                                    @string.Format("{0:#,0}", Model.TotalWeightDry)
+                                </td>
+                                break;
+                            case RouteColumns.CasesTotal:
+                                <td class="Cases">
+                                    @string.Format("{0:#,0}", Model.TotalCases)
+                                </td>
+                                break;
+                            case RouteColumns.CasesFreezer:
+                                <td class="FreezerCases">
+                                    @string.Format("{0:#,0}", Model.TotalCasesFreezer)
+                                </td>
+                                break;
+                            case RouteColumns.CasesCooler:
+                                <td class="CoolerCases">
+                                    @string.Format("{0:#,0}", Model.TotalCasesCooler)
+                                </td>
+                                break;
+                            case RouteColumns.CasesDry:
+                                <td class="DryCases">
+                                    @string.Format("{0:#,0}", Model.TotalCasesDry)
+                                </td>
+                                break;
+                            case RouteColumns.CubesTotal:
+                                <td class="Cubes">
+                                    @string.Format("{0:#,0}", Model.TotalCubes)
+                                </td>
+                                break;
+                            case RouteColumns.CubesFreezer:
+                                <td class="FreezerCubes">
+                                    @string.Format("{0:#,0}", Model.TotalCubesFreezer)
+                                </td>
+                                break;
+                            case RouteColumns.CubesCooler:
+                                <td class="CoolerCubes">
+                                    @string.Format("{0:#,0}", Model.TotalCubesCooler)
+                                </td>
+                                break;
+                            case RouteColumns.CubesDry:
+                                <td class="DryCubes">
+                                    @string.Format("{0:#,0}", Model.TotalCubesDry)
+                                </td>
+                                break;
+                        }
+                    }
+                    <td class="button-container" id="button-container-@Model.RouteId.ToString()">
+                        <a href="javascript:void(0)" class="route-comment-readonly-dialog-trigger" data-route-id="@(Model.RouteId)" data-center-number="@Model.SygmaCenterNo" data-route-number="@Model.RouteNumber">
+                            <i class="fa fa-comments pull-right" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div>
+        <table id="stops-table-popup" class="stopTable stopTablePopup" style="width:100%">
+            <thead>
+            </thead>
+            <tbody>
+                @* ADDING TITLE COLUMNS INTO BODY TO ALLOW FOR SCROLLING *@
+                <tr>
+                    @foreach (var col in columnToDisplayInOrder)
+                    {
+                        switch ((StopColumns)(int.Parse(col.ID)))
+                        {
+                            case StopColumns.StopNumber:
+                                <th data-column-id="stop">Stop</th>
+                                break;
+                            case StopColumns.BillTo:
+                                <th data-column-id="bill">Bill To</th>
+                                break;
+                            case StopColumns.ShipTo:
+                                <th data-column-id="ship">Ship To</th>
+                                break;
+                            case StopColumns.Customer:
+                                <th data-column-id="cust">Customer</th>
+                                break;
+                            case StopColumns.Concept:
+                                <th data-column-id="concept">Concept</th>
+                                break;
+                            case StopColumns.Street:
+                                <th data-column-id="street">Street</th>
+                                break;
+                            case StopColumns.City:
+                                <th data-column-id="city">City</th>
+                                break;
+                            case StopColumns.State:
+                                <th data-column-id="state">State</th>
+                                break;
+                            case StopColumns.Zip:
+                                <th data-column-id="zip">Zip</th>
+                                break;
+                            case StopColumns.Phone:
+                                <th data-column-id="phone" class="minWidthGridColumn-med">Phone</th>
+                                break;
+                            case StopColumns.Email:
+                                <th data-column-id="email">Email</th>
+                                break;
+                            case StopColumns.OrderStatus:
+                                <th data-column-id="orderStatus">Order Status</th>
+                                break;
+                            case StopColumns.WeightTotal:
+                                <th data-column-id="weight">LBs</th>
+                                break;
+                            case StopColumns.WeightFreezer:
+                                <th data-column-id="weight-freezer">Freezer LBs</th>
+                                break;
+                            case StopColumns.WeightCooler:
+                                <th data-column-id="weight-cooler">Cooler LBs</th>
+                                break;
+                            case StopColumns.WeightDry:
+                                <th data-column-id="weight-dry">Dry LBs</th>
+                                break;
+                            case StopColumns.CubesTotal:
+                                <th data-column-id="cubes">Cubes</th>
+                                break;
+                            case StopColumns.CubesFreezer:
+                                <th data-column-id="cubes-freezer">Freezer Cubes</th>
+                                break;
+                            case StopColumns.CubesCooler:
+                                <th data-column-id="cubes-cooler">Cooler Cubes</th>
+                                break;
+                            case StopColumns.CubesDry:
+                                <th data-column-id="cubes-dry">Dry Cubes</th>
+                                break;
+                            case StopColumns.CasesTotal:
+                                <th data-column-id="cases">Cases</th>
+                                break;
+                            case StopColumns.CasesFreezer:
+                                <th data-column-id="cases-freezer">Freezer Cases</th>
+                                break;
+                            case StopColumns.CasesCooler:
+                                <th data-column-id="cases-cooler">Cooler Cases</th>
+                                break;
+                            case StopColumns.CasesDry:
+                                <th data-column-id="cases-dry">Dry Cases</th>
+                                break;
+                            case StopColumns.PlannedDelivery:
+                                <th data-column-id="plannedDelivery" data-toggle="tooltip"
+                                    title="Original scheduled delivery time for this stop from the plan/route master." class="minWidthGridColumn-lg">Planned Delivery</th>
+                                break;
+                            case StopColumns.ScheduledDelivery:
+                                <th data-column-id="scheduledDelivery" data-toggle="tooltip"
+                                    title="New scheduled delivery time after any adjustments made prior to dispatch, such as a stop moved to a different route. This delivery time will eventually flow to Telogis (coming soon!)." class="minWidthGridColumn-lg">Scheduled Delivery</th>
+                                break;
+                            case StopColumns.AdjustedDelivery:
+                                <th data-column-id="adjustedDelivery" data-toggle="tooltip"
+                                    title="Any adjustments made to the route/stop just prior to, or after dispatch, such as delays from traffic, weather, or driver availability." class="minWidthGridColumn-lg">Adjusted Delivery</th>
+                                break;
+                            case StopColumns.AdjustedOffset:
+                                <th data-column-id="offSet">Offset Hours</th>
+                                break;
+                            case StopColumns.Comment:
+                                <th data-column-id="comments" class="minWidthGridColumn-lg">Comments</th>
+                                break;
+                        }
+                    }
+                </tr>
+
+
+                @{
+                    var index = 0;
+                    var stops = Model.Stops.OrderBy(s => s.StopNumber).ToList();
+                    while (index < stops.Count())
+                    {
+                        var stop = stops[index];
+                        var modifiedTypeColorStyle = "";
+                        switch (stop.RoutePlanModificationTypeId)
+                        //1 is system removed
+                        //2 is system added
+                        //3 is time change
+                        //4 is manual remove
+                        //5 is manual add
+                        {
+                            case 1:
+                                modifiedTypeColorStyle = "tracker-stop-row-removed";
+                                break;
+                            case 2:
+                                modifiedTypeColorStyle = "tracker-stop-row-added";
+                                break;
+                            case 3:
+                                modifiedTypeColorStyle = "tracker-stop-row-modified";
+                                break;
+                            case 4:
+                                modifiedTypeColorStyle = "tracker-stop-row-removed";
+                                break;
+                            case 5:
+                                modifiedTypeColorStyle = "tracker-stop-row-added";
+                                break;
+                            default:
+                                modifiedTypeColorStyle = "tracker-stop-row-default";
+                                break;
+                        }
+
+                        //If current stop is removed, then give it a remove-stop class
+                        <tr id="@(stop.RouteId)-row-@(stop.StopNumber)" class="@modifiedTypeColorStyle tracker-stop-row"
+                            data-adjusted-stop-number="@stop.StopNumber"
+                            data-stop-index="@index"
+                            data-stop-modified-type="@stop.RoutePlanModificationTypeId"
+                            data-route-dispatch-time="@Model.DispatchTime">
+
+                            @foreach (var col in columnToDisplayInOrder)
+                            {
+                                switch ((StopColumns)(int.Parse(col.ID)))
+                                {
+                                    case StopColumns.StopNumber:
+                                        <td id="stop-@stop.StopNumber">
+                                            @stop.StopNumber @(stop.AddOnOrderCount > 0 ? "(" + stop.AddOnOrderCount.ToString() + " add-ons)" : "")
+                                        </td>
+                                        break;
+                                    case StopColumns.BillTo:
+                                        <td id="billto-@stop.StopNumber">
+                                            @if (index > 0)
+                                            {
+                                                @((int)(stop.BillTo))
+                                            }
+                                        </td>
+                                        break;
+                                    case StopColumns.ShipTo:
+                                        <td id="billto-@stop.StopNumber">
+                                            @if (index > 0)
+                                            {
+                                                @((int)(stop.ShipTo))
+                                            }
+                                        </td>
+                                        break;
+                                    case StopColumns.Customer:
+                                        <td id="custname-@stop.StopNumber">
+                                            @stop.CustomerName
+                                        </td>
+                                        break;
+                                    case StopColumns.Concept:
+                                        <td id="concept-@stop.StopNumber">
+                                            @stop.Concept
+                                        </td>
+                                        break;
+                                    case StopColumns.Street:
+                                        <td id="street-@stop.StopNumber">
+                                            @stop.Address1 @stop.Address2
+                                        </td>
+                                        break;
+                                    case StopColumns.City:
+                                        <td id="city-@stop.StopNumber">
+                                            @stop.City
+                                        </td>
+                                        break;
+                                    case StopColumns.State:
+                                        <td id="state-@stop.StopNumber">
+                                            @stop.State
+                                        </td>
+                                        break;
+                                    case StopColumns.Zip:
+                                        <td id="zip-@stop.StopNumber">
+                                            @stop.Zip
+                                        </td>
+                                        break;
+                                    case StopColumns.Phone:
+                                        <td id="phone-@stop.StopNumber">
+                                            @{ var phone = "";
+                                                if (!string.IsNullOrEmpty(stop.Phone) && stop.Phone.Length == 10)
+                                                {
+                                                    phone = "(" + stop.Phone.Substring(0, 3) + ") " + stop.Phone.Substring(3, 3) + "-" + stop.Phone.Substring(6, 4);
+                                                }
+                                                @Html.Raw(phone);
+                                            }
+                                        </td>
+                                        break;
+                                    case StopColumns.Email:
+                                        <td id="email-@stop.StopNumber">
+                                            @{
+                                                //Only create the email anchor element if the stop has an email address.
+                                                if (!(stop.EmailAddress.IsEmpty()))
+                                                {
+                                                    <a href="mailto:@stop.EmailAddress">@stop.EmailAddress</a>
+                                                }
+                                            }
+                                        </td>
+                                        break;
+                                    case StopColumns.OrderStatus:
+                                        <td id="orderStatus-@stop.StopNumber" style="text-align:center">
+                                            @stop.OrderStatus
+                                        </td>
+                                        break;
+                                    case StopColumns.WeightTotal:
+                                        <td>
+                                            @string.Format("{0:#,0}", stop.Weight)
+                                        </td>
+                                        break;
+                                    case StopColumns.WeightFreezer:
+                                        <td>
+                                            @string.Format("{0:#,0}", stop.WeightFreezer)
+                                        </td>
+                                        break;
+                                    case StopColumns.WeightCooler:
+                                        <td>
+                                            @string.Format("{0:#,0}", stop.WeightCooler)
+                                        </td>
+                                        break;
+                                    case StopColumns.WeightDry:
+                                        <td>
+                                            @string.Format("{0:#,0}", stop.WeightDry)
+                                        </td>
+                                        break;
+                                    case StopColumns.CubesTotal:
+                                        <td>
+                                            @string.Format("{0:#,0}", stop.Cubes)
+                                        </td>
+                                        break;
+                                    case StopColumns.CubesFreezer:
+                                        <td>
+                                            @string.Format("{0:#,0}", stop.CubesFreezer)
+                                        </td>
+                                        break;
+                                    case StopColumns.CubesCooler:
+                                        <td>
+                                            @string.Format("{0:#,0}", stop.CubesCooler)
+                                        </td>
+                                        break;
+                                    case StopColumns.CubesDry:
+                                        <td>
+                                            @string.Format("{0:#,0}", stop.CubesDry)
+                                        </td>
+                                        break;
+                                    case StopColumns.CasesTotal:
+                                        <td>
+                                            @string.Format("{0:#,0}", stop.Cases)
+                                        </td>
+                                        break;
+                                    case StopColumns.CasesFreezer:
+                                        <td>
+                                            @string.Format("{0:#,0}", stop.CasesFreezer)
+                                        </td>
+                                        break;
+                                    case StopColumns.CasesCooler:
+                                        <td>
+                                            @string.Format("{0:#,0}", stop.CasesCooler)
+                                        </td>
+                                        break;
+                                    case StopColumns.CasesDry:
+                                        <td>
+                                            @string.Format("{0:#,0}", stop.CasesDry)
+                                        </td>
+                                        break;
+                                    case StopColumns.PlannedDelivery:
+                                        <td id="normalDelDate-@stop.StopNumber">
+                                            @stop.PlannedDeliveryDateTime.Value.ToString("MM/dd/yy hh:mm tt")
+                                        </td>
+                                        break;
+                                    case StopColumns.ScheduledDelivery:
+                                        <td id="scheduledDelDate-@stop.StopNumber" data-route-id="@stop.RouteId" data-stop-number="@stop.StopNumber" data-route-plan-id="@stop.RoutePlanId">
+                                            @stop.ScheduledDeliveryDateTime.Value.ToString("MM/dd/yy hh:mm tt")
+                                        </td>
+                                        break;
+                                    case StopColumns.AdjustedDelivery:
+
+                                        <td>
+                                            @stop.AdjustedDeliveryDateTime.Value.ToString("MM/dd/yy hh:mm tt")
+
+
+                                            @Html.HiddenFor(r => r.Stops[index].BillTo)
+                                            @Html.HiddenFor(r => r.Stops[index].ShipTo)
+                                            @Html.HiddenFor(r => r.Stops[index].Phone)
+
+                                            @Html.HiddenFor(r => r.Stops[index].RoutePlanId)
+                                            @Html.HiddenFor(r => r.Stops[index].RouteId)
+                                            @Html.HiddenFor(r => r.Stops[index].RouteNumber)
+                                            <input type="hidden" id="Stops[@index].AdjustedStopNumber" name="Stops[@index].AdjustedStopNumber" value="@stop.StopNumber" class="adjusted-stop-number" />
+                                            @Html.HiddenFor(r => r.Stops[index].RoutePlanModificationTypeId, new { @class = "route-plan-modification-type-id" })
+                                            <input type="hidden" id="Stops[@index].AdjustedRouteNumber" name="Stops[@index].AdjustedRouteNumber" value="@stop.RouteNumber" />
+                                            <input type="hidden" id="Stops[@index].EarlyLate" name="Stops[@index].EarlyLate" value="" />
+                                        </td>
+                                        break;
+                                    case StopColumns.AdjustedOffset:
+                                        <td id="offset-@stop.StopNumber">
+
+                                            @{
+                                                var min = 0;
+                                                if ((stop.AdjustedDeliveryDateTime - stop.ScheduledDeliveryDateTime).HasValue)
+                                                {
+                                                    var timeSpan = (TimeSpan)(stop.AdjustedDeliveryDateTime - stop.ScheduledDeliveryDateTime);
+                                                    min = (int)timeSpan.TotalHours;
+                                                }
+                                            }
+
+                                            @min
+                                        </td>
+
+                                        break;
+                                    case StopColumns.Comment:
+                                        <td>
+
+                                            <span>@stop.LastCustomerCommunicationComment.Trim()</span>
+                                            <a href="javascript:void(0)" class="comment-dialog-trigger" data-route-plan-id="@stop.RoutePlanId" data-bill-to="@((int)stop.BillTo)" data-ship-to="@((int)stop.ShipTo)" data-center-number="@stop.SygmaCenterNo" data-stop-number="@stop.StopNumber">
+                                                <i class="fa fa-comments-o " aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                        break;
+                                }
+                            }
+                        </tr>
+                        index = index + 1;
+                    }
+
+                }
+            </tbody>
+            <tfoot>
+                <tr class="no-hover-color">
+                    @*<td colspan="1"><hr /><input id="submit-route-@Model.RouteId-changes" class="btn btn-primary" type="button" onclick="javascript: submitStopChange('@Model.RouteId');" value="Submit" /><span style="display: none; margin-left: 15px;" class="operation-message"></span></td>*@
+                    <td colspan="1"><hr /><input class="btn btn-secondary" type="button" value="Close" data-dismiss="modal" /><span style="display: none; margin-left: 15px;" class="operation-message"></span></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+

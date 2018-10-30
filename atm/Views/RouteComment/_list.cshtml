@@ -1,0 +1,41 @@
+﻿@model atm.Models.RouteCommentListViewModel
+@using atm.Controllers
+<table class="comment-table">
+    <tr>
+        <th>
+            <div style='clear:both;'>
+                <span style='font-weight: bold;'>COMMENT</span>
+                <a class='comment-add' data-stop-number="@Model.StopNumber" data-ship-to="@Model.ShipTo" data-bill-to="@Model.BillTo" data-screen="@Model.Screen" data-route-plan-id="@Model.RoutePlanId" data-center-number="@Model.CenterNumber">
+                    <span class="comment-add-span" style='float:left; cursor: pointer;'>[ADD] </span>
+                </a>
+            </div>
+        </th>
+        <th>
+            <div style='clear:both;'>
+                <span style='font-weight: bold;'>CATEGORY</span>
+            </div>
+        </th>
+    </tr>
+    @{
+        foreach (var comment in Model)
+        {
+            <tr class="stop-comment-row" data-stop-number="@Model.StopNumber">
+                <td class="stop-comment">
+                    <div style='height: 18px; clear:both;'>
+                        <span style='font-size: 8pt; font-weight: bold;'>[@comment.CreatedDate_MMDDHHMM] @comment.CreatedBy: @(comment.Status == 1 ? "[INTERNAL]" : "")</span>
+                        @if (comment.CreatedBy.ToUpperInvariant() == ViewBag.UserName.ToString().ToUpperInvariant() || comment.CreatedBy.ToUpperInvariant() == ViewBag.LastFirstName.ToString().ToUpperInvariant())
+                        {
+                            <a data-commentid='@comment.CommentId' class='comment-edit' data-category="@comment.ShortComment" data-is-internal="@((comment.Status == 2).ToString().ToLower())" data-screen="@Model.Screen"
+                               data-ship-to="@comment.ShipTo" data-bill-to="@comment.BillTo" data-route-plan-id="@comment.RoutePlanId" data-center-number="@comment.CenterNumber" data-stop-number="@Model.StopNumber"
+                               data-comment="@comment.LongComment"><span style='float:right; cursor: pointer;' class='ui-icon ui-icon-pencil'></span></a>
+                        }
+                    </div>
+                    @comment.LongComment
+                </td>
+                <td class="stop-comment-category">
+                    @comment.ShortComment
+                </td>
+            </tr>
+        }
+    }
+</table>

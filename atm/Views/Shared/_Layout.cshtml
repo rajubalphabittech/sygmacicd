@@ -1,0 +1,57 @@
+﻿@using StackExchange.Profiling;
+@using StackExchange.Profiling.Mvc
+@{
+    // allows us to test out starting a profiler hidden - use ALT + P to toggle display of results
+    var startHidden = !string.IsNullOrEmpty(Request.QueryString["startHidden"]);
+}
+<!DOCTYPE html>
+<html>
+<head>
+    @this.InitClientTimings()
+
+    @using (MiniProfiler.Current.Step("<head> rendering"))
+    {
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ATM - @ViewBag.Title</title>
+        <link href="~/App_Themes/ATM/jquery-ui.css" rel="stylesheet" />
+        <link href="~/App_Themes/ATM/jquery-ui.custom.css" rel="stylesheet" />
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+        
+        @RenderSection("stylesheets", required: false)
+    }
+</head>
+<body>
+    <div id="menu">
+        @{ Html.RenderAction("Menu", "Home"); }
+    </div>
+
+    <div class="container-fluid body-content">
+        @RenderBody()
+        <hr style="padding-top:2px; padding-bottom: 2px;margin-top:2px; margin-bottom: 2px;" />
+        <footer>
+            @*<a id="hlSiteChanges">ATM Updates</a>
+                <p>&copy; @DateTime.Now.Year - Sygmanetwork</p>*@
+            @(ViewBag.Version ?? "")
+        </footer>
+    </div>
+
+    <div id="dialog-window" style="display:none"></div>
+
+    <div id="toast-window" class="toast"></div>
+
+
+    <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha256-KM512VNnjElC30ehFwehXjx1YCHPiQkOPmqnrWtpccM=" crossorigin="anonymous"></script>
+
+    @Scripts.Render("~/bundles/atm-ui")
+
+    @RenderSection("scripts", required: false)
+
+    @MiniProfiler.Current.RenderIncludes(position: RenderPosition.Right, showTrivial: false, showTimeWithChildren: false, startHidden: startHidden)
+</body>
+</html>

@@ -1,0 +1,103 @@
+﻿@model atm.Models.StopViewModel
+
+<form id="stopeditform" autocomplete="off">
+    <input type="hidden" asp-for="RouteStopId" id="RouteStopId" value="@Model.RouteStopId" />
+    <div class="form-horizontal">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h3 class="modal-title">Edit Stop</h3>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-6 text-right">
+                    <label>Bill To:</label>
+                </div>
+                <div class="col-md-6 text-left">
+                    @Model.BillTo
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 text-right">
+                    <label>Ship To:</label>
+                </div>
+                <div class="col-md-6 text-left">
+                    @Model.ShipTo
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 text-right">
+                    <label>Customer Name:</label>
+                </div>
+                <div class="col-md-6 text-left">
+                    @Model.CustomerName
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 text-right">
+                    <label>Original Delivery Date & Time:</label>
+                </div>
+                <div class="col-md-6 text-left" id="originalTime">
+                    @Model.ScheduledDeliveryDateTime
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 text-right">
+                    <label>Time Late or Early:</label>
+                </div>
+                <div class="col-md-6 text-left">
+                    @*<input type="text" name="timeLate" id="timeLate" value="" class="hasDatepicker">*@
+                    <input type="text" id="timeLate" placeholder="00:00"/>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 text-right">
+                    <label>Adjusted Delivery Date & Time:</label>
+                </div>
+                <div class="col-md-6 text-left" id="adjustedTime">
+                    @Model.ScheduledDeliveryDateTime
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 text-right">
+                    <label>Comments:</label>
+                </div>
+                <div class="col-md-6 text-left">
+                    <textarea id="Comment" cols="20" rows="5">@Model.Comment</textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 text-right">
+                    <label class="form-check-label" for="cascadingChanges">Cascading Changes:</label>
+                </div>
+                <div class="col-md-6 text-left">
+                    <input type="checkbox" class="form-check-input" id="cascadingChanges">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="btnSaveStopModal">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    </div>
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function ($) {
+
+        $('#btnSaveStopModal').click(function () {
+
+
+            // post
+
+        });
+
+        $('#timeLate').timepicker({
+            stepHour: 1,
+            stepMinute: 15,
+        });
+
+    });
+</script>

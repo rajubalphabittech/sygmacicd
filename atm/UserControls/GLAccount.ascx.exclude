@@ -1,0 +1,106 @@
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="GLAccount.ascx.cs" Inherits="UserControls_GLAccount" %>
+<%--	
+<script language="javascript">
+var invalidGLMsg = '*** Invalid Account Number ***';
+	function OpenLookup(nq) {
+		var centerName = GN('ddGLCenter', nq);
+		var deptName = GN('ddGLDepartment', nq);
+		var center = GetCenter(nq);
+		var ddGLDepartment = $get(deptName);
+		var dept = ddGLDepartment.options[ddGLDepartment.selectedIndex].value;
+		if (dept == '') {
+			alert('Please select a Department to filter on!');
+		} else {
+			var newWin = OpenWindow('AccountLookup.aspx?c=' + center + '&d=' + dept + '&q=' + nq, 520, 450, 1, 1, 1, 1, 'AccountLookup');
+			if (newWin != null)
+				newWin.focus();
+		}
+	}
+	
+	function SetGLDescription(nq) {
+		var centerName = GN('ddGLCenter', nq);
+		var deptName = GN('ddGLDepartment', nq);
+		var acctName = GN('txtGLAccount', nq);
+		var subAcctName = GN('txtGLSubAccount', nq);
+		if ($get(deptName) != null) {
+			var center = GetCenter(nq);
+			var dept = $get(deptName).options[$get(deptName).selectedIndex].value;
+			var accountNo = $get(acctName).value.trim();
+			var subAccountNo = $get(subAcctName).value.trim();
+			if (subAccountNo.length < 4) {
+				subAccountNo = subAccountNo.padLeft(4, '0');
+				$get(subAcctName).value = subAccountNo;
+			}
+			if (center != '' && dept != '' && accountNo != '') {
+				if (!isNaN(parseInt(accountNo)) && !isNaN(parseInt(subAccountNo))) {
+					PageMethods.PM_GetGLDescription(center, dept, accountNo, subAccountNo, OnSuccess, OnFailure, nq);
+				} else {
+					SetGLAccountDescription(invalidGLMsg, nq);
+				}
+			} else {
+				SetGLAccountDescription('', nq);
+			}
+		}
+	}
+	function GN(field, qualifier) {
+		if (qualifier != '')
+			return qualifier + '_' + field;
+		return field;
+	}
+	function GetCenter(nq) {
+		var ddGLCenter = $get(GN('ddGLCenter', nq));
+		if (ddGLCenter != null) {
+			return ddGLCenter.options[ddGLCenter.selectedIndex].value;
+		} else {
+			return $get(GN('lblGLCenter', nq)).innerHTML;
+		}
+	}
+	function OnSuccess(retVal, context) {
+		if (retVal == null)
+			retVal = invalidGLMsg;
+		SetGLAccountDescription(retVal, context);
+	}
+	function SetGLAccountDescription(desc, nq) {
+		var glDescName = GN('lblGLDescription', nq);
+		var validGLName = GN('hidValidGL', nq);
+		if (desc == invalidGLMsg || desc == '') {
+			$get(glDescName).style.color = '#ff0000';
+			$get(validGLName).value = 'false';
+		} else {
+			$get(glDescName).style.color = '#000000';
+			$get(validGLName).value = 'true';
+		}
+		if (navigator.userAgent.indexOf('Firefox') > -1) {
+			$get(glDescName).textContent = desc;
+		} else {
+			$get(glDescName).innerText = desc;
+		}
+	}
+	function OnFailure(error) {
+		alert('Error looking up account description.\nPlease refresh the page and try again.');
+	}
+</script>--%>
+<table cellspacing="0" cellpadding="0" border="0">
+	<tr>
+		<td>
+			<asp:Panel ID="pnlWritable" runat="server">
+				<asp:DropDownList ID="ddGLCenter" runat="server" DataValueField="SygmaCenterNo" DataTextField="SygmaCenterNo" AutoPostBack="true" OnSelectedIndexChanged="ddGLCenter_SelectedIndexChanged">
+				</asp:DropDownList>
+				<asp:Label ID="lblGLCenter" runat="server"></asp:Label>
+				&nbsp;-&nbsp;<asp:DropDownList ID="ddGLDepartment" runat="server" DataValueField="DepartmentNo" DataTextField="DepartmentNo" OnSelectedIndexChanged="ddGLDepartment_SelectedIndexChanged">
+				</asp:DropDownList>
+				&nbsp;-&nbsp;<asp:TextBox ID="txtGLAccount" runat="server" Width="33px" MaxLength="5" OnTextChanged="txtGLAccount_TextChanged" autocomplete="off"></asp:TextBox>&nbsp;-&nbsp;<asp:TextBox
+					ID="txtGLSubAccount" runat="server" Width="28px" MaxLength="4" Text="0000" OnTextChanged="txtGLSubAccount_TextChanged" autocomplete="off"></asp:TextBox>&nbsp;<asp:HyperLink
+						ID="hlGLLookup" runat="server" Text="Lookup" NavigateUrl="javascript: void(0);" onKeyPress="event.cancelBubble=(event.keyCode == 13);"></asp:HyperLink>
+			</asp:Panel>
+			<asp:Label ID="lblGLAccount" runat="server"></asp:Label>
+		</td>
+	</tr>
+	<tr style="height: 20px">
+		<td>
+			<%--<asp:HiddenField ID="hidValidGL" runat="server" Value="false" />--%>
+			<div id="lblGLDescription" style="display: inline-block" runat="server">
+			</div>
+		</td>
+	</tr>
+</table>

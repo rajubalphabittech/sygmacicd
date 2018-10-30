@@ -1,0 +1,414 @@
+﻿@model atm.Models.StopMoveViewModel
+
+<div class="stop-move-container container-fluid">
+    <div class="row">
+        <div class="col-xs-4 stop-move-box stop-move-box-left">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <strong>From ROUTE <span class="source-route-number"></span> STOP <span class="source-stop-number"></span></strong>
+                            <input type="hidden" class="center-number" id="centerNumber" value="@Model.SygmaCenterNo" />
+                            <input type="hidden" class="source-route-number" id="sourceRouteNumber" />
+                            <input type="hidden" class="source-stop-number" id="sourceStopNumber" />
+                            <input type="hidden" class="source-route-plan-id" id="sourceRoutePlanId" />
+                            <input type="hidden" class="source-route-id" id="sourceRouteId" />
+                            <input type="hidden" class="source-stop-planned-delivery-datetime" id="sourceStopPlannedDeliveryDateTime" />
+                            <br />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <strong><span id="SourceRouteName"></span></strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="panel-source panel-source-route-info">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <span style="border-bottom: solid 1px black;">Route</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                Number of Stops: <span id="SourceNumberOfStops"></span>
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="SourceNumberOfStopsMinusOne"></span>
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span class="capacity-green">1 stop</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                Scheduled Delivery:
+                                <span id="SourceScheduledDeliveryDateTime"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-source panel-source-weight">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <span style="border-bottom: solid 1px black;">Weight</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                T: <span id="SourceTotalWeight"></span> lbs
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="SourceTotalWeightUpdated"></span> lbs
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span id="SourceTotalWeightDifference" class="source-stop-weight-total capacity-green"></span> lbs
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                F: <span id="SourceTotalWeightFreezer"></span> lbs
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="SourceTotalWeightFreezerUpdated"></span> lbs
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span id="SourceTotalWeightFreezerDifference" class="source-stop-weight-freezer capacity-green"></span> lbs
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                C: <span id="SourceTotalWeightCooler"></span> lbs
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="SourceTotalWeightCoolerUpdated"></span> lbs
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span id="SourceTotalWeightCoolerDifference" class="source-stop-weight-cooler capacity-green"></span> lbs
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                D: <span id="SourceTotalWeightDry"></span> lbs
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="SourceTotalWeightDryUpdated"></span> lbs
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span id="SourceTotalWeightDryDifference" class="source-stop-weight-dry capacity-green"></span> lbs
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-source panel-source-cubes">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <span style="border-bottom: solid 1px black;">Cubes</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                T: <span id="SourceTotalCubes"></span>
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="SourceTotalCubesUpdated"></span>
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span id="SourceTotalCubesDifference" class="source-stop-cubes-total capacity-green"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                F: <span id="SourceTotalCubesFreezer"></span>
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="SourceTotalCubesFreezerUpdated"></span>
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span id="SourceTotalCubesFreezerDifference" class="source-stop-cubes-freezer capacity-green"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                C: <span id="SourceTotalCubesCooler"></span>
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="SourceTotalCubesCoolerUpdated"></span>
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span id="SourceTotalCubesCoolerDifference" class="source-stop-cubes-cooler capacity-green"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                D: <span id="SourceTotalCubesDry"></span>
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="SourceTotalCubesDryUpdated"></span>
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span id="SourceTotalCubesDryDifference" class="source-stop-cubes-dry capacity-green"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-source panel-source-cases">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <span style="border-bottom: solid 1px black;">Cases</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                T: <span id="SourceTotalCases"></span>
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="SourceTotalCasesUpdated"></span>
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span id="SourceTotalCasesDifference" class="source-stop-cases-total capacity-green"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                F: <span id="SourceTotalCasesFreezer"></span>
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="SourceTotalCasesFreezerUpdated"></span>
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span id="SourceTotalCasesFreezerDifference" class="source-stop-cases-freezer capacity-green"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                C: <span id="SourceTotalCasesCooler"></span>
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="SourceTotalCasesCoolerUpdated"></span>
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span id="SourceTotalCasesCoolerDifference" class="source-stop-cases-cooler capacity-green"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                D: <span id="SourceTotalCasesDry"></span>
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="SourceTotalCasesDryUpdated"></span>
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span id="SourceTotalCasesDryDifference" class="source-stop-cases-dry capacity-green"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-4 stop-move-box stop-move-box-center">
+            <div class="row">
+                <div class="col-xs-5">
+                    <br />
+                    FROM ROUTE: <br />
+                    @Html.DropDownList("SourceRouteNumberDDL", new SelectList(Model.RouteList, "Key", "Value", Model.SourceRouteId), "Select ...", new { @class = "form-control input-sm", data_ready = "false" })<br />
+                </div>
+                <div class="col-xs-5">
+                    <br />
+                    STOP NUMBER: <br />
+                    <select id="SourceStopNumberDDL" class="form-control input-sm" data-ready="false"></select><br />
+                    <input type="hidden" id="SourceRoutePlanIdInitialValue" value="@Model.SourceRoutePlanId" />
+                </div>
+                <div class="col-xs-1">
+                    <br />
+                    <br /><i style="margin-top:5px; margin-left: -20px;" class='fa fa-spinner fa-2x fa-spin loading hidden' aria-hidden='true'></i>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-5">
+                    TO NEW ROUTE:
+                    <br />
+                    @Html.DropDownList("DestinationRouteNumberDDL", new SelectList(Model.RouteList, "Key", "Value", Model.DestinationRouteId), "Select ...", new { @class = "form-control input-sm", data_ready = "false" })
+                    <input type="hidden" id="destinationRouteId" /><input type="hidden" id="destinationRouteNumber" />
+                    <br />
+                    <br />
+                </div>
+                <div class="col-xs-6">
+                    NEW STOP NUMBER:
+                    <br />
+                    <input type="number" max="1000" min="1" step="1" id="destinationStopNumber" class="form-control" data-ready="false" />
+                    <br />
+                    <br />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    NEW DELIVERY DATE/TIME:
+                    <br />
+                    <input type="text" id="destinationDeliveryDateTime" class="form-control" />
+                    <br />
+                    <br />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    COMMENT:
+                    <br />
+                    <textarea style="width:250px; height:100px;" id="stopModificationComment" />
+                    <br />
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-4 stop-move-box stop-move-box-right">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <strong>To ROUTE <span id="DestinationRouteNumber"></span></strong> <br />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <strong><span id="DestinationRouteName"></span></strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="panel-destination panel-destination-route-info">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <span style="border-bottom: solid 1px black;">Route: </span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                Number of Stops:
+                                <span id="DestinationNumberOfStops"></span>
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="DestinationNumberOfStopsPlusOne"></span>
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span class="capacity-red">1 stop</span>
+                                <br /><br />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-destination panel-destination-weight">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <span style="border-bottom: solid 1px black;">Weight</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                T:
+                                <span id="DestinationTotalWeight"></span> lbs
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="DestinationTotalWeightUpdated"></span> lbs
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span class="source-stop-weight-total capacity-red"></span> lbs
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                F:
+                                <span id="DestinationTotalWeightFreezer"></span> lbs
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="DestinationTotalWeightFreezerUpdated"></span> lbs
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span class="source-stop-weight-freezer capacity-red"></span> lbs
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                C:
+                                <span id="DestinationTotalWeightCooler"></span> lbs
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="DestinationTotalWeightCoolerUpdated"></span> lbs
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span class="source-stop-weight-cooler capacity-red"></span> lbs
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                D:
+                                <span id="DestinationTotalWeightDry"></span> lbs
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="DestinationTotalWeightDryUpdated"></span> lbs
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span class="source-stop-weight-dry capacity-red"></span> lbs
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-destination panel-destination-cubes">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <span style="border-bottom: solid 1px black;">Cubes</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                T:
+                                <span id="DestinationTotalCubes"></span>
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="DestinationTotalCubesUpdated"></span>
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span class="source-stop-cubes-total capacity-red"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                F:
+                                <span id="DestinationTotalCubesFreezer"></span>
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="DestinationTotalCubesFreezerUpdated"></span>
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span class="source-stop-cubes-freezer capacity-red"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                C:
+                                <span id="DestinationTotalCubesCooler"></span>
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="DestinationTotalCubesCoolerUpdated"></span>
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span class="source-stop-cubes-cooler capacity-red"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                D:
+                                <span id="DestinationTotalCubesDry"></span>
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="DestinationTotalCubesDryUpdated"></span>
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span class="source-stop-cubes-dry capacity-red"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-destination panel-destination-cases">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <span style="border-bottom: solid 1px black;">Cases</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                T:
+                                <span id="DestinationTotalCases"></span>
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="DestinationTotalCasesUpdated"></span>
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span class="source-stop-cases-total capacity-red"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                F:
+                                <span id="DestinationTotalCasesFreezer"></span>
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="DestinationTotalCasesFreezerUpdated"></span>
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span class="source-stop-cases-freezer capacity-red"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                C:
+                                <span id="DestinationTotalCasesCooler"></span>
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="DestinationTotalCasesCoolerUpdated"></span>
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span class="source-stop-cases-cooler capacity-red"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                D:
+                                <span id="DestinationTotalCasesDry"></span>
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                <span id="DestinationTotalCasesDryUpdated"></span>
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span class="source-stop-cases-dry capacity-red"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

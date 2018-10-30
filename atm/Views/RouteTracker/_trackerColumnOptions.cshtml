@@ -1,0 +1,58 @@
+﻿@model atm.Models.RouteTrackerColumnOptionViewModel
+
+<div id="routesColumnOptions">
+    <div style="margin-bottom: 5px">
+        <div class="inlineBlock column-option-dialog-selection-heading">
+            Routes - Available Columns
+        </div>
+        <div class="inlineBlock column-option-dialog-heading-spacer"></div>
+        <div class="inlineBlock column-option-dialog-selection-heading">
+            Routes - Selected Columns
+        </div>
+    </div>
+    <div style="margin-bottom: 5px; height: 200px">
+        <div class="inlineBlock" style="width: 200px; vertical-align: top;">
+            @Html.ListBox("routeAvailableColumns", new SelectList(Model.RouteColumnOption.AvailableColumns.OrderBy(x => x.ColumnIdentifier), "ID", "ColumnIdentifier"), new { @class = "column-options-dialog-listbox", multiple = "multiple" })
+        </div>
+        <div class="inlineBlock" style="width: 60px; text-align: center; vertical-align: top;">
+            <a id="routeColumnMoveRight" class="fa fa-angle-right fa-lg btn btn-default column-option-dialog-button" title="Move Right" Alt="Select" aria-hidden="true"></a> 
+            <a id="routeColumnMoveAllRight" class="fa fa-angle-double-right fa-lg btn btn-default column-option-dialog-button" title="Move All Right" Alt="Select All" aria-hidden="true"></a>
+            <a id="routeColumnMoveLeft" class="fa fa-angle-left fa-lg btn btn-default column-option-dialog-button" title="Move Left" Alt="UnSelect" aria-hidden="true"></a>
+        </div>
+        <div class="inlineBlock" style="width: 200px; vertical-align: top;">
+            @Html.ListBox("routeSelectedColumns", new SelectList(Model.RouteColumnOption.Columns.OrderBy(x => int.Parse(x.DisplayOrder)), "ID", "ColumnIdentifier"), new { @class = "column-options-dialog-listbox", multiple = "multiple" })
+        </div>
+        <div class="inlineBlock column-option-dialog-move-button-frame">
+            <a id="routeColumnMoveUp" class="fa fa-angle-up fa-lg btn btn-default column-option-dialog-button" aria-hidden="true"></a> 
+            <a id="routeColumnMoveDown" class="fa fa-angle-down fa-lg btn btn-default column-option-dialog-button" aria-hidden="true"></a> 
+        </div>
+    </div>
+</div>
+<div id="stopsColumnOptions">
+    <div style="margin-bottom: 5px">
+        <div class="inlineBlock column-option-dialog-selection-heading">
+            Stops - Available Columns
+        </div>
+        <div class="inlineBlock column-option-dialog-heading-spacer"></div>
+        <div class="inlineBlock column-option-dialog-selection-heading">
+            Stops - Selected Columns
+        </div>
+    </div>
+    <div style="margin-bottom: 5px; height: 200px">
+        <div class="inlineBlock" style="width: 200px; vertical-align: top;">
+            @Html.ListBox("stopAvailableColumns", new SelectList(Model.StopColumnOption.AvailableColumns.OrderBy(x => x.ColumnIdentifier), "ID", "ColumnIdentifier"), new { @class = "column-options-dialog-listbox", multiple = "multiple" })
+        </div>
+        <div class="inlineBlock" style="width: 60px; text-align: center; vertical-align: top;">
+            <a id="stopColumnMoveRight" class="fa fa-angle-right fa-lg btn btn-default column-option-dialog-button" aria-hidden="true"></a> 
+            <a id="stopColumnMoveAllRight" class="fa fa-angle-double-right fa-lg btn btn-default column-option-dialog-button" aria-hidden="true"></a>
+            <a id="stopColumnMoveLeft" class="fa fa-angle-left fa-lg btn btn-default column-option-dialog-button" aria-hidden="true"></a>
+        </div>
+        <div class="inlineBlock" style="width: 200px; vertical-align: top;">
+            @Html.ListBox("stopSelectedColumns", new SelectList(Model.StopColumnOption.Columns.OrderBy(x => int.Parse(x.DisplayOrder)), "ID", "ColumnIdentifier"), new { @class = "column-options-dialog-listbox", multiple = "multiple" })
+        </div>
+        <div class="inlineBlock column-option-dialog-move-button-frame">
+            <a id="stopColumnMoveUp" class="fa fa-angle-up fa-lg btn btn-default column-option-dialog-button" aria-hidden="true"></a> 
+            <a id="stopColumnMoveDown" class="fa fa-angle-down fa-lg btn btn-default column-option-dialog-button" aria-hidden="true"></a> 
+        </div>
+    </div>
+</div>

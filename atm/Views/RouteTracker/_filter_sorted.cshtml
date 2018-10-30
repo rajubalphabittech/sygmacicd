@@ -1,0 +1,42 @@
+﻿@model SelectList
+
+<form>
+    <div class="col-md-10">
+        <div class="row">
+            <div class="col-md-2">
+                <label for="selectCenterDropdown" style="visibility:hidden;">Center</label>
+                @Html.DropDownList("centerSelector", Model, "Select Center...", new { @class = "form-control", @id = "selectCenterDropdown" })
+            </div>
+            <div class="col-md-3">
+                <label for="weekendingInput">Weekending Date</label>
+                <input id="weekendingInput" class="form-control weekending-date" type="date" />
+            </div>
+
+            <div class="col-md-3 hidden" id="StartDateDiv">
+                <label for="startDateInput">From Date</label>
+                <input id="startDateInput" class="form-control d-inline start-date" type="date" />
+            </div>
+            <div class="col-md-3 hidden" id="EndDateDiv">
+                <label for="endDateInput">To Date</label>
+                <input id="endDateInput" class="form-control d-inline end-date" type="date" />
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div id="RouteSearchDiv" class="col-md-2 hidden">
+                <label for="searchInputGroup" style="visibility:hidden;">Search</label>
+                <div class="input-group" id="searchInputGroup">
+                    <div class="input-group-addon" style="background-color:#FFFFFF"><i class="fa fa-search"></i></div>
+                    <input type="text" class="form-control" maxlength="20" id="routeSearch" placeholder="Search..." style="border-left: 0px;">
+                </div>
+            </div>
+            <div id="ShowModifiedRoutesDiv" class="col-md-3 hidden">
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+
+    </div>
+</form>

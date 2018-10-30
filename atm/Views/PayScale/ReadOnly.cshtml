@@ -1,0 +1,36 @@
+﻿@model atm.Models.PayRateViewModel
+@section stylesheets{
+    <link href="~/Content/common.css" rel="stylesheet" />
+}
+<div class="pageTitle">View Pay Scales</div>
+<div class="pageSubtitle">View Pay Scales by Center</div>
+
+<div class="container-fluid" style="margin-top: 10px">
+
+    <div class="row">
+        <div class="col-sm-5 col-md-4 col-lg-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">Select Pay Scale</div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label for="sygmaCenterNo">Center</label>
+                        @Html.DropDownList("sygmaCenterNo", Model.CenterSelectList, "Choose...", new { @class = "form-control" })
+                    </div>
+
+                    <div class="form-group">
+                        <label for="payScale">Pay Scale</label>
+                        @Html.DropDownList("payScale", Model.PayScaleSelectList, "Choose...", new { @class = "form-control" })
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="rates" class="col-xs-8 col-sm-7 col-md-8 col-lg-8">
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript" src="~/Scripts/pay-scale.js"></script>
+}

@@ -1,0 +1,558 @@
+html
+{
+	font-family: Verdana, Arial, geneva, helvetica;
+}
+body, div
+{
+	font-size: 11px;
+}
+TH
+{
+	font-weight: bold;
+}
+TD
+{
+	font-size: 11px;
+}
+
+Select, Input, TextArea
+{
+	font-family: Verdana, Arial, geneva, helvetica;
+	font-size: 11px;
+}
+
+.pageTitle {
+	font-weight: bold;
+	font-size: 24px;
+}
+
+.pageSubtitle {
+	font-weight: normal;
+	font-size: 18px;
+	color: #808080;
+}
+
+.inputHeader
+{
+	font-size: 10px;
+	font-weight: bold;
+	color: #000000;
+	padding: 0px 0px 3px 0px;
+}
+.inputBoxPrint
+{
+	background-color: #F7F7DE;
+	border-top: solid 1px #6B696B;
+	border-right: solid 1px #6B696B;
+	border-left: solid 1px #6B696B;
+	border-bottom: solid 1px #6B696B;
+}
+
+.inputBoxPrint thead, .inputBoxPrint th
+{
+	font-weight: bold;
+	color: #ffffff;
+	font-size: 11px;
+	text-align: left;
+	background-color: #6B696B;
+	height: 18px;
+	padding: 0px 5px 0px 5px;
+	vertical-align: middle;
+}
+
+.inputBoxPrint thead a:link, inputBoxPrint th a:link
+{
+	color: #ffffff;
+}
+
+.inputBoxPrint tr td
+{
+	background: #F7F7DE;
+	padding: 2px 2px 2px 2px;
+}
+
+.inputBoxPrint .inputHeader
+{
+	font-weight: bold;
+	color: #000000;
+	font-size: 10px;
+	text-decoration: underline;
+}
+.inputBoxPrint .sectionHeader
+{
+	font-weight: bold;
+	color: #000000;
+	font-size: 12px;
+}
+
+.inputPanel
+{
+	position: relative;
+	background-color: #F7F7DE;
+	border: solid 1px #6B696B;
+	overflow: hidden;
+}
+
+.inputPanel .header
+{
+	position: relative;
+	top: 0px;
+	left: 0px;
+	font-weight: bold;
+	color: #ffffff;
+	font-size: 11px;
+	text-align: left;
+	background-color: #6B696B;
+	height: 15px;
+	padding: 3px 5px 0px 5px;
+	width: 100%;
+}
+
+.inputPanel .header a
+{
+	color: #ffffff;
+	font-weight: bold;
+	font-family: Arial;
+}
+
+.inputPanel .body
+{
+	background: #F7F7DE;
+	padding-top: 5px;
+	padding-right: 5px;
+	padding-bottom: 5px;
+	padding-left: 5px;
+	width: 100%;
+}
+
+.inputPanel .body .inputHeader
+{
+	font-weight: bold;
+	color: #000000;
+	font-size: 10px;
+}
+
+.panel.report-panel {
+	width: 400px;
+}
+
+
+
+
+.inputBox .body .sectionHeader
+{
+	font-weight: bold;
+	color: #000000;
+	font-size: 12px;
+}
+
+.inputBox
+{
+	background-color: #F7F7DE;
+	border-top: solid 1px #6B696B;
+	border-right: solid 1px #6B696B;
+	border-left: solid 1px #6B696B;
+	border-bottom: solid 1px #6B696B;
+}
+.inputBoxWithChild
+{
+	background-color: #F7F7DE;
+	border-top: solid 1px #6B696B;
+	border-right: solid 1px #6B696B;
+	border-left: solid 1px #6B696B;
+	border-bottom: solid 1px #6B696B;
+}
+.inputBox thead, .inputBox th, .inputBox .header
+{
+	font-weight: bold;
+	color: #ffffff;
+	font-size: 11px;
+	text-align: left;
+	background-color: #6B696B;
+	height: 15px;
+	padding: 0px 5px 0px 5px;
+	vertical-align: middle;
+}
+.inputBoxWithChild .header
+{
+	font-weight: bold;
+	color: #ffffff;
+	font-size: 11px;
+	text-align: left;
+	background-color: #6B696B;
+	height: 18px;
+	padding: 0px 5px 0px 5px;
+	vertical-align: middle;
+}
+.inputBox thead a, .inputBox th a, .inputBoxWithChild thead a, .inputBoxWithChild th a
+{
+	color: #ffffff;
+	font-weight: bold;
+	font-family: Arial;
+}
+.inputBox tr td
+{
+	background: #F7F7DE;
+	padding: 2px 2px 2px 2px;
+}
+.inputBoxWithChild .cell
+{
+	background: #F7F7DE;
+	padding: 2px 2px 2px 2px;
+}
+.inputBox tbody .inputHeader, .inputBoxWithChild tbody .inputHeader
+{
+	font-weight: bold;
+	color: #000000;
+	font-size: 10px;
+}
+.inputBox tbody .sectionHeader, .inputBoxWithChild tbody .sectionHeader
+{
+	font-weight: bold;
+	color: #000000;
+	font-size: 12px;
+}
+.button1
+{
+	cursor: hand;
+	background-color: #6B696B;
+	color: white;
+	border-bottom: medium none #003085;
+	border-left: medium none #003085;
+	border-right: medium none #003085;
+	border-top: medium none #003085;
+	font-weight: bolder;
+	font-size: 10px;
+}
+.sectionHeader
+{
+	font-weight: bold;
+	font-size: 12px;
+}
+.detailHeader
+{
+	background-color: Silver;
+	color: Black;
+	font-weight: bold;
+}
+.dataHeader
+{
+	font-size: 10px;
+	font-weight: bold;
+	background-color: #6B696B;
+	color: #ffffff;
+}
+.dataHeaderLink
+{
+	color: #ffffff;
+	font-weight: Bold;
+}
+
+.dataItem
+{
+	background-color: #F7F7DE;
+	color: #000000;
+}
+.dataAltItem
+{
+	background-color: #DCDCDC;
+}
+
+.area_header
+{
+	width: 90%;
+	font-size: 10pt;
+	color: #313390;
+	text-decoration: none;
+	font-weight: bold;
+	border-bottom: solid 1px #000000;
+}
+
+.sideNote
+{
+	font-size: 9px;
+	font-weight: normal;
+}
+.modalBG
+{
+	background-color: Gray;
+	filter: alpha(opacity=70);
+	opacity: 0.7;
+}
+.modalPopup
+{
+	background-color: #ffffdd;
+	border-width: 3px;
+	border-style: solid;
+	border-color: Gray;
+	padding: 3px;
+}
+.modalTitle
+{
+	cursor: move;
+	background-color: #DDDDDD;
+	border: solid 1px Gray;
+	color: Black;
+	font-size: 11px;
+	font-weight: bold;
+}
+.textboxWatermark
+{
+	color: Gray;
+	font-style: italic;
+}
+
+@media print
+{
+	.noPrint
+	{
+		display: none;
+	}
+}
+.invisible
+{
+	-ms-filter: “progid:DXImageTransform.Microsoft.Alpha(Opacity=0)”;
+	filter: alpha(opacity=0);
+	-khtml-opacity: 0.0;
+	-moz-opacity: 0.0;
+	opacity: 0.0;
+}
+
+.gridView, .gridView td, .gridView th
+{
+	border-left: solid 1px #dddddd;
+	border-right: solid 1px #dddddd;
+	border-collapse: collapse;
+}
+
+.gridView th
+{
+	font-size: 10px;
+	height: 15px;
+}
+.gridView td
+{
+	font-size: 11px;		
+}
+.gridView .row, .gridView .row a
+{
+	color: black;
+	background-color: #F7F7DE;
+}
+
+.gridView .altRow, .gridView .altRow a
+{
+	color: black;
+	background-color: #DCDCDC;
+}
+
+.gridView .selectedRow
+{
+	color: white;
+	background-color: #008A8C;
+}
+
+.gridView .selectedRow a
+{
+	color: white;
+	background-color: #008A8C;
+	text-decoration: none;
+}
+.inlineBlock
+{
+	display: inline-block;
+	position: relative;
+	zoom: 1;
+	*display: inline;
+}
+.tempBorder
+{
+	border: 1px solid black;
+}
+
+.instructions
+{
+	font-family: Arial;
+}
+
+.keyBoardStroke
+{
+	position: relative;
+	display: inline;
+	font-weight: bold;
+	font-size: 13px		
+}
+.progressPane
+{
+	position: absolute;
+	top: 30%;
+	left: 38%;
+	width: 235px;
+	background-color: White;
+	border: 1px inset gray;
+	z-index: 1001;
+}
+.disableBackground
+{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	overflow: hidden;
+	padding: 0;
+	margin: 0;
+	background-color: #000;
+	filter: alpha(opacity=50);
+	opacity: 0.5;
+	z-index: 1000;
+}
+.autoCompleteList
+{
+	border: 1px solid #090;
+	list-style-type: none;
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
+	background-color: #FFF;
+	text-align: left;
+}
+.autoCompleteListItem
+{
+	padding: 3px 0px 3px 5px;
+	margin: 0px 0px 0px 0px;
+}
+.autoCompleteListItemHover
+{
+	padding: 3px 0px 3px 5px;
+	background-color: #3399ff;
+	color: #ffffff;
+}
+
+.input-xs {
+	height: 22px;
+	padding: 2px 5px;
+	font-size: 12px;
+	line-height: 1.5; /* If Placeholder of the input is moved up, rem/modify this. */
+	border-radius: 3px;
+}
+
+.ajax__tab_outer {
+	z-index: 99 !important;
+}
+
+.fa-lg.fa-check.payroll-forms {
+	color: red;
+}
+
+.fa-lock.fa-lg.payroll-forms {
+}
+
+.fa-thumbs-up.fa-lg.payroll-forms {
+	color: green;
+}
+
+.fa-thumbs-down.fa-lg.payroll-forms {
+	color: red;
+}
+
+.minWidthGridColumn-sm {
+	min-width: 60px;
+	overflow: hidden;
+}
+
+.minWidthGridColumn-med {
+	min-width: 100px;
+	overflow: hidden;
+}
+
+.minWidthGridColumn-lg {
+	min-width: 120px;
+	overflow: hidden;
+}
+
+.reportsValidatorIndent {
+	padding-left: 15px;
+	vertical-align: top;
+	margin: 0px;
+}
+
+.batchFuelTicketBtn {
+	margin-top: 10px;
+	margin-bottom:10px;
+}
+.pagination-cs {
+	/*display: inline-block;*/
+	padding-left: 0;
+	padding-right: 0;
+	margin: 10px 0 5px 0;
+	border-radius: 4px;
+}
+
+.pagination-cs table > tbody > tr > td {
+	display: inline;
+}
+
+.pagination-cs table > tbody > tr > td > a,
+.pagination-cs table > tbody > tr > td > span {
+	position: relative;
+	float: left;
+	padding: 8px 12px;
+	line-height: 1.42857143;
+	text-decoration: none;
+	color: #337ab7;
+	background-color: #ffffff;
+	border: 1px solid #dddddd;
+	margin-left: -1px;
+}
+
+.pagination-cs table > tbody > tr > td > span {
+	position: relative;
+	float: left;
+	padding: 8px 12px;
+	line-height: 1.42857143;
+	text-decoration: none;
+	margin-left: -1px;
+	z-index: 2;
+	color: #fff;
+	background-color: #337ab7;
+	border-color: #337ab7;
+	cursor: default;
+}
+
+.pagination-cs table > tbody > tr > td:first-child > a,
+.pagination-cs table > tbody > tr > td:first-child > span {
+	margin-left: 0;
+	border-bottom-left-radius: 4px;
+	border-top-left-radius: 4px;
+}
+
+.pagination-cs table > tbody > tr > td:last-child > a,
+.pagination-cs table > tbody > tr > td:last-child > span {
+	border-bottom-right-radius: 4px;
+	border-top-right-radius: 4px;
+}
+
+.pagination-cs table > tbody > tr > td > a:hover,
+.pagination-cs table > tbody > tr > td > span:hover,
+.pagination-cs table > tbody > tr > td > a:focus,
+.pagination-cs table > tbody > tr > td > span:focus {
+	color: #337ab7;
+	background-color: #eeeeee;
+	border-color: #dddddd;
+}
+
+.validator-message {
+	color: #FF0000;
+}
+
+.disabled-drop-down{
+    background-color: #F9F9F9;
+    color: #808080;
+    border-color: #6B696B;
+}
+
+.center-number-label{
+
+}

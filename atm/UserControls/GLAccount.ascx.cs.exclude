@@ -1,0 +1,348 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Text;
+
+public partial class UserControls_GLAccount : System.Web.UI.UserControl {
+	string gSetGLDescription = "";
+	protected void Page_Load(object sender, EventArgs e) {
+		SetPageVariables();
+	}
+	private void SetPageVariables() {
+		gSetGLDescription = string.Format("SetGLDescription('{0}');", this.ClientID);
+
+		//ddGLCenter.Attributes.Add("onChange", gSetGLDescription);
+		ddGLDepartment.Attributes.Add("onChange", gSetGLDescription);
+		txtGLAccount.Attributes.Add("onChange", gSetGLDescription);
+		txtGLSubAccount.Attributes.Add("onChange", gSetGLDescription);
+
+		string openLookup = (FormAccountId == 0) ?
+			string.Format("OpenLookup('{0}');", this.ClientID) :
+			string.Format("OpenLookup('{0}',{1});", this.ClientID, FormAccountId);
+
+		hlGLLookup.Attributes.Add("onClick", openLookup);
+
+		AddScript();
+	}
+
+	protected void Page_PreRender(object sender, EventArgs e) {
+		//if (ReadOnly) {
+		//  pnlWritable.Style.Add(HtmlTextWriterStyle.Display, "none");
+		//  lblGLAccount.Visible = true;
+		//  lblGLAccount.Text = string.Format("{0}-{1}-{2}-{3}", Center.ToString().PadLeft(3, '0'), Department, Account, SubAccount);
+		//} else {
+		//  pnlWritable.Style.Remove("Display");
+		//  lblGLAccount.Visible = false;
+		//}
+
+		ScriptManager.RegisterStartupScript(this, this.GetType(), string.Concat("SET_GL_DESCRIPTION_", this.ClientID), gSetGLDescription, true);
+	}
+	public bool SetCenters() {
+		return SetCenters((short)0);
+	}
+	public bool SetCenters(short sygmaCenterNo) {
+		//TODO: crap.  this is Invoice Payment specific.  need to generalize this before using it anywhere else.  maybe pass in the sp or dataset on the calling page
+		DataView dv = BasePage.IntranetDB.GetDataView("up_ip_getAvailableCenters", BasePage.UserName);
+		dv.RowFilter = "SygmaCenterNo <> 0";
+		dv.Sort = "SygmaCenterNo asc";
+		ddGLCenter.DataSource = dv;
+		ddGLCenter.DataBind();
+		int count = dv.Count;
+		if (count > 0) {
+			if (count > 1) {
+				lblGLCenter.Visible = false;
+				ddGLCenter.Visible = true;
+			} else {
+				lblGLCenter.Text = ddGLCenter.Items[0].Value;
+				lblGLCenter.Visible = true;
+				ddGLCenter.Visible = false;
+			}
+			if (sygmaCenterNo == 0) {
+				WebCommon.SelectListValue<int>(ddGLCenter, (short)BasePage.UserCenterInfo.SygmaCenterNo);
+			} else {
+				WebCommon.SelectListValue<short>(ddGLCenter, sygmaCenterNo);
+			}
+			SetDepartments();
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public void SetDepartments() {
+		string priorValue = ddGLDepartment.SelectedValue;
+		DataView dv = BasePage.IntranetDB.GetDataView("up_ip_getGLDepartments", ddGLCenter.SelectedValue);
+		if (ExcludeDepartmentZero)
+			dv.RowFilter = "DepartmentNo <> '0000'";
+		ddGLDepartment.DataSource = dv;
+		ddGLDepartment.DataBind();
+		bool itemSelected = false;
+		if (priorValue == "") {
+			if (FavoriteDepartment != "")
+				itemSelected = WebCommon.SelectListValue(ddGLDepartment, FavoriteDepartment);
+		} else {
+			itemSelected = WebCommon.SelectListValue<string>(ddGLDepartment, priorValue);
+		}
+		if (!itemSelected)
+			ddGLDepartment.Items.Insert(0, new ListItem("", ""));
+	}
+
+	public string GetGLDescription() {
+		if (Center != 0 && Department != "" && Account != "" && SubAccount != "") {
+			DataView dv = BasePage.IntranetDB.GetDataView("up_ip_getGLAccount", Center, Department, Account, SubAccount);
+			if (dv.Count > 0)
+				return dv[0]["AccountDescription"].ToString().Trim();
+		}
+		return null;
+	}
+
+	public void Clear() {
+		txtGLAccount.Text = "";
+		WebCommon.SelectListValue(ddGLDepartment, FavoriteDepartment);
+		txtGLSubAccount.Text = "";
+		lblGLDescription.InnerText = "";
+		//hidValidGL.Value = "false";
+	}
+
+	public delegate void GLAccountChangeEventHandler(UserControls_GLAccount sender, GLAccountChangeEventArgs args);
+	public class GLAccountChangeEventArgs {
+		public GLAccountChangeEventArgs(AccountField changedField) {
+			gChangedField = changedField;
+		}
+		private AccountField gChangedField;
+
+		public AccountField ChangedField {
+			get { return gChangedField; }
+		}
+
+	}
+
+
+	public event GLAccountChangeEventHandler Change;
+	public event EventHandler CenterChange;
+	public event EventHandler DepartmentChange;
+	public event EventHandler AccountChange;
+	public event EventHandler SubAccountChange;
+
+	public enum AccountField {
+		Center,
+		Department,
+		Account,
+		SubAccount
+	}
+
+	protected void ddGLCenter_SelectedIndexChanged(object sender, EventArgs e) {
+		SetDepartments();
+		if (CenterChange != null)
+			CenterChange(sender, e);
+		if (Change != null)
+			Change(this, new GLAccountChangeEventArgs(AccountField.Center));
+	}
+	protected void ddGLDepartment_SelectedIndexChanged(object sender, EventArgs e) {
+		if (DepartmentChange != null)
+			DepartmentChange(sender, e);
+		if (Change != null)
+			Change(this, new GLAccountChangeEventArgs(AccountField.Department));
+	}
+	protected void txtGLAccount_TextChanged(object sender, EventArgs e) {
+		if (AccountChange != null)
+			AccountChange(sender, e);
+		if (Change != null)
+			Change(this, new GLAccountChangeEventArgs(AccountField.Account));
+	}
+	protected void txtGLSubAccount_TextChanged(object sender, EventArgs e) {
+		if (SubAccountChange != null)
+			SubAccountChange(sender, e);
+		if (Change != null)
+			Change(this, new GLAccountChangeEventArgs(AccountField.SubAccount));
+	}
+
+	private void AddScript() {
+		StringBuilder sb = new StringBuilder();
+		sb.Append("var invalidGLMsg = '*** Invalid Account Number ***';");
+		sb.Append("function OpenLookup(nq,fai) {");
+		sb.Append("var centerName = GN('ddGLCenter', nq);");
+		sb.Append("var deptName = GN('ddGLDepartment', nq);");
+		sb.Append("var center = GetCenter(nq);");
+		sb.Append("var ddGLDepartment = $get(deptName);");
+		sb.Append("var dept = ddGLDepartment.options[ddGLDepartment.selectedIndex].value;");
+		sb.Append("if (dept == '') {");
+		sb.Append("alert('Please select a Department to filter on!');");
+		sb.Append("} else {");
+		sb.Append("var url = 'AccountLookup.aspx?c=' + center + '&d=' + dept + '&q=' + nq;");
+		sb.Append("if (fai != null) url = url + '&fai=' + fai;");
+		sb.Append("var newWin = OpenWindow(url, 520, 450, 1, 1, 1, 1, 'AccountLookup');");
+		sb.Append("if (newWin != null)");
+		sb.Append("newWin.focus();");
+		sb.Append("}");
+		sb.Append("}");
+		sb.Append("function SetGLDescription(nq) {");
+		sb.Append("var centerName = GN('ddGLCenter', nq);");
+		sb.Append("var deptName = GN('ddGLDepartment', nq);");
+		sb.Append("var acctName = GN('txtGLAccount', nq);");
+		sb.Append("var subAcctName = GN('txtGLSubAccount', nq);");
+		sb.Append("if ($get(deptName) != null) {");
+		sb.Append("var center = GetCenter(nq);");
+		sb.Append("var dept = $get(deptName).options[$get(deptName).selectedIndex].value;");
+		sb.Append("var accountNo = $get(acctName).value.trim();");
+		sb.Append("var subAccountNo = $get(subAcctName).value.trim();");
+		sb.Append("if (subAccountNo.length < 4) {");
+		sb.Append("subAccountNo = subAccountNo.padLeft(4, '0');");
+		sb.Append("$get(subAcctName).value = subAccountNo;");
+		sb.Append("}");
+		sb.Append("if (center != '0' && dept != '' && accountNo != '') {");
+		sb.Append("if (!isNaN(parseInt(accountNo)) && !isNaN(parseInt(subAccountNo))) {");
+		sb.Append("PageMethods.PM_GetGLDescription(center, dept, accountNo, subAccountNo, OnSuccess, OnFailure, nq);");
+		sb.Append("} else {");
+		sb.Append("SetGLAccountDescription(invalidGLMsg, nq);");
+		sb.Append("}");
+		sb.Append("} else {");
+		sb.Append("SetGLAccountDescription('', nq);");
+		sb.Append("}");
+		sb.Append("}");
+		sb.Append("}");
+		sb.Append("function GN(field, qualifier) {");
+		sb.Append("if (qualifier != '')");
+		sb.Append("return qualifier + '_' + field;");
+		sb.Append("return field;");
+		sb.Append("}");
+		sb.Append("function GetCenter(nq) {");
+		sb.Append("var ddGLCenter = $get(GN('ddGLCenter', nq));");
+		sb.Append("if (ddGLCenter != null) {");
+		sb.Append("return ddGLCenter.options[ddGLCenter.selectedIndex].value;");
+		sb.Append("} else {");
+		sb.Append("return $get(GN('lblGLCenter', nq)).innerHTML;");
+		sb.Append("}");
+		sb.Append("}");
+		sb.Append("function OnSuccess(retVal, context) {");
+		sb.Append("if (retVal == null)");
+		sb.Append("retVal = invalidGLMsg;");
+		sb.Append("SetGLAccountDescription(retVal, context);");
+		sb.Append("}");
+		sb.Append("function SetGLAccountDescription(desc, nq) {");
+		sb.Append("var glDescName = GN('lblGLDescription', nq);");
+		//sb.Append("var validGLName = GN('hidValidGL', nq);");
+		sb.Append("if (desc == invalidGLMsg || desc == '') {");
+		sb.Append("$get(glDescName).style.color = '#ff0000';");
+		//sb.Append("$get(validGLName).value = 'false';");
+		sb.Append("} else {");
+		sb.Append("$get(glDescName).style.color = '#000000';");
+		//sb.Append("$get(validGLName).value = 'true';");
+		sb.Append("}");
+		sb.Append("if (navigator.userAgent.indexOf('Firefox') > -1) {");
+		sb.Append("$get(glDescName).textContent = desc;");
+		sb.Append("} else {");
+		sb.Append("$get(glDescName).innerText = desc;");
+		sb.Append("}");
+		sb.Append("}");
+		sb.Append("function OnFailure(error) {");
+		sb.Append("alert('Error looking up account description.\\nPlease refresh the page and try again.');");
+		sb.Append("}");
+
+		ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "GL_ACCOUNT_SCRIPTS", sb.ToString(), true);
+	}
+
+	public short Center {
+		get { return Convert.ToInt16(ddGLCenter.SelectedValue); }
+		set {
+			WebCommon.SelectListValue<short>(ddGLCenter, value);
+			lblGLCenter.Text = value.ToString();
+		}
+	}
+
+	public string Department {
+		get { return ddGLDepartment.SelectedValue; }
+		set { WebCommon.SelectListValue(ddGLDepartment, value); }
+	}
+
+	public string Account {
+		get { return txtGLAccount.Text; }
+		set { txtGLAccount.Text = value; }
+	}
+
+	public string SubAccount {
+		get { return txtGLSubAccount.Text; }
+		set { txtGLSubAccount.Text = value; }
+	}
+
+	public bool IsValid {
+		get { return CheckThatGLAccountIsValid(); }
+	}
+
+	private bool CheckThatGLAccountIsValid() {
+		if (ddGLDepartment.SelectedValue != "") {
+			int deptNo = Convert.ToInt32(ddGLDepartment.SelectedValue);
+			int accountNo = 0;
+			if (Int32.TryParse(txtGLAccount.Text, out accountNo)) {
+				int subAccountNo = 0;
+				if (Int32.TryParse(txtGLSubAccount.Text, out subAccountNo)) {
+					return Convert.ToBoolean(BasePage.IntranetDB.GetScalar("up_ip_isGLAccountValid", ddGLCenter.SelectedValue, deptNo, accountNo, subAccountNo));					
+				}
+			}
+		}
+		return false;
+	}
+
+
+	public string FavoriteDepartment {
+		get {
+			if (ViewState["FavoriteDepartment"] == null)
+				ViewState.Add("FavoriteDepartment", BasePage.IntranetDB.GetScalar("up_ip_getUserFavoriteDepartment", BasePage.UserName).ToString());
+			return (string)ViewState["FavoriteDepartment"];
+		}
+		set { ViewState["FavoriteDepartment"] = value; }
+	}
+
+
+	//public bool ReadOnly {
+	//  get {
+	//    if (ViewState["ReadOnly"] == null)
+	//      ViewState.Add("ReadOnly", false);
+	//    return (bool)ViewState["ReadOnly"];
+	//  }
+	//  set { ViewState["ReadOnly"] = value; }
+	//}
+
+
+	private BasePage gBasePage;
+	public BasePage BasePage {
+		get {
+			try {
+				if (gBasePage == null)
+					gBasePage = (BasePage)this.Page;
+				return gBasePage;
+			} catch (Exception exp) {
+				throw new InvalidBasePageException(exp);
+			}
+		}
+	}
+
+	public bool AutoPostBack {
+		get { return ddGLDepartment.AutoPostBack; }
+		set {
+			ddGLDepartment.AutoPostBack = value;
+			txtGLAccount.AutoPostBack = value;
+			txtGLSubAccount.AutoPostBack = value;
+		}
+	}
+
+	public int FormAccountId {
+		get {
+			if (ViewState["FormAccountId"] == null)
+				ViewState.Add("FormAccountId", 0);
+			return (int)ViewState["FormAccountId"];
+		}
+		set { ViewState["FormAccountId"] = value; }
+	}
+
+	private bool gExcludeDepartmentZero;
+
+	public bool ExcludeDepartmentZero {
+		get { return gExcludeDepartmentZero; }
+		set { gExcludeDepartmentZero = value; }
+	}
+}

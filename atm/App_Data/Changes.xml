@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Changes>
+  <Change>
+    <date>11/04/2015</date>
+    <Descriptions>
+      <description>Edit Fuel Tickets Option for Vehicle and Trailer.</description>
+    </Descriptions>
+  </Change>
+  <Change>
+    <date>11/04/2015</date>
+    <Descriptions>
+      <description>Edit odometer for closed forms irrespective of form status and user role.</description>
+    </Descriptions>
+  </Change>
+  <Change>
+    <date>11/04/2015</date>
+    <Descriptions>
+      <description>Route Name to default to city / state in Manage Routes.</description>
+    </Descriptions>
+  </Change>
+  <Change>
+    <date>11/04/2015</date>
+    <Descriptions>
+      <description>Form can not be rejected once adp report is generated.</description>
+    </Descriptions>
+  </Change>
+  <Change>
+    <date>11/04/2015</date>
+    <Descriptions>
+      <description>Add Actual Payments only when an employees does not have any payments in that form.</description>
+    </Descriptions>
+  </Change>
+  <Change>
+    <date>11/04/2015</date>
+    <Descriptions>
+      <description>Check in Validation for vehicles without odometer reading.</description>
+    </Descriptions>
+  </Change>
+  <Change>
+    <date>11/04/2015</date>
+    <Descriptions>
+      <description>Open Add Payment box automatically after adding backhaul if Add Payment check box is selected in Add Backhaul dialog box.</description>
+    </Descriptions>
+  </Change>
+  <Change>
+    <date>11/04/2015</date>
+    <Descriptions>
+      <description>Removed Mass Check in option from Forms page.</description>
+    </Descriptions>
+  </Change>
+ </Changes>

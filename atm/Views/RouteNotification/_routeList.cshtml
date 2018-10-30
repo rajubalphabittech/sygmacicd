@@ -1,0 +1,188 @@
+﻿@model atm.Models.RouteNotificationListViewModel
+
+<table id="routes-table" class="table table-hover table-striped table-bordered table-responsive">
+    <thead style="background-color:#768a93; color:white;">
+        <tr>
+            <th data-column-id="routeNumber">Route #</th>
+            <th data-column-id="routeName">Route Name</th>
+            <th data-column-id="stops">Stops</th>
+            <th data-column-id="plannedDispatchTime" style="width:175px;">Planned Dispatch</th>
+            <th data-column-id="scheduledDispatchTime" style="width:175px;">Scheduled Dispatch</th>
+            <th data-column-id="adjustedDispatchTime" style="width:175px;" data-toggle="tooltip" title="Any adjustments made to the route/stop just prior to, or after dispatch, such as delays from traffic, weather, or driver availability.">Adjusted Dispatch</th>
+            <th data-column-id="concepts">Concepts</th>
+            <th data-column-id="selectionColumn" style="width:30px;"><input data-toggle="tooltip" title="Select all routes" type="checkbox" class="select-all-routes"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            var index = 0;
+            var routes = Model.OrderBy(m => m.RouteNumber).ToList();
+            while (index < routes.Count())
+            {
+                var route = routes[index];
+                var conceptIdList = string.Join(",", route.ConceptIds);
+                var conceptNameList = string.Join(", ", route.Concepts);
+
+                <tr data-id="@(route.RouteNumber + '-' + route.SygmaCenterNo.ToString())"
+                    data-route-id="@(route.RouteId.ToString())"
+                    data-number=" @route.RouteNumber.ToLower()"
+                    data-name="@route.RouteName.ToLower()"
+                    data-center="@route.SygmaCenterNo.ToString()"
+                    data-route-dispatch-time="@route.AdjustedDispatchTime.ToString()"
+                    data-route-concepts='@conceptIdList'
+                    data-route-concept-names='@conceptNameList'
+                    data-route-number-of-stops='@route.NumberOfStops'
+                    name="route-row">
+
+                    <td class="route-info">@route.RouteNumber</td>
+                    <td class="route-info">@route.RouteName</td>
+                    <td class="route-info">@route.NumberOfStops</td>
+                    <td id="@("ScheduledDispatchTime_" + route.RouteId)" class="route-info">
+                        @Convert.ToDateTime(route.PlannedDispatchTime).ToString("MM/dd/yy hh:mm tt")
+                    </td>
+                    <td id="@("ScheduledDispatchTime_" + route.RouteId)" class="route-info">
+                        @Convert.ToDateTime(route.ScheduledDispatchTime).ToString("MM/dd/yy hh:mm tt")
+                    </td>
+                    <td id="@("AdjustedDispatchTime_" + route.RouteId)" class="route-info">
+                        @Convert.ToDateTime(route.AdjustedDispatchTime).ToString("MM/dd/yy hh:mm tt")
+                    </td>
+                    <td class="maxWidthGridColumn-med-wrapping route-info">
+                        @{
+                            var conceptListString = "";
+                            int conceptCounter = 0;
+                            while (conceptCounter < route.Concepts.Count())
+                            {
+                                conceptListString += route.Concepts.ElementAt(conceptCounter);
+                                conceptCounter++;
+                                if (conceptCounter < route.Concepts.Count())
+                                {
+                                    conceptListString += ", ";
+                                }
+                            }
+                        }
+                        @conceptListString
+                    </td>
+                    <td class="route-info"><input type="checkbox" data-route-id="@route.RouteId" class="select-all-stops-in-route"></td>
+                </tr>
+                <tr data-route-id="@(route.RouteId.ToString())"
+                    data-number=" @route.RouteNumber.ToLower()"
+                    data-name="@route.RouteName.ToLower()"
+                    data-center="@route.SygmaCenterNo.ToString()"
+                    data-route-dispatch-time="@route.AdjustedDispatchTime.ToString()"
+                    data-route-concepts='@conceptIdList'
+                    data-route-concept-names='@conceptNameList'
+                    data-route-number-of-stops='@route.NumberOfStops'
+                    name="route-stop-row">
+                    <td colspan="8">
+                        <table class="table table-hover table-striped table-bordered table-responsive stopTable">
+                            <tr>
+                                <th style="min-width: 70px;" data-column-id="stop">Stop</th>
+                                <th style="min-width: 70px;" data-column-id="bill">Bill To</th>
+                                <th style="min-width: 70px;" data-column-id="ship">Ship To</th>
+                                <th style="min-width: 150px;" data-column-id="cust">Customer</th>
+                                <th style="min-width: 150px;" data-column-id="concept">Concept</th>
+
+                                <th style="min-width: 150px;" data-column-id="street">Street</th>
+                                <th style="min-width: 80px;" data-column-id="city">City</th>
+                                <th style="min-width: 40px;" data-column-id="state">State</th>
+                                <th style="min-width: 40px;" data-column-id="zip">Zip</th>
+                                <th style="min-width: 100px;" data-column-id="phone" class="minWidthGridColumn-med">Phone</th>
+                                <th style="min-width: 180px;" data-column-id="email">Email</th>
+
+                                <th style="min-width: 70px;" data-column-id="orderStatus">Status</th>
+
+                                <th style="min-width: 140px;" data-column-id="plannedDelivery" data-toggle="tooltip"
+                                    title="Original scheduled delivery time for this stop from the plan/route master.">Planned Delivery</th>
+                                <th style="min-width: 140px;" data-column-id="scheduledDelivery" data-toggle="tooltip"
+                                    title="New scheduled delivery time after any adjustments made prior to dispatch, such as a stop moved to a different route. This delivery time will eventually flow to Telogis (coming soon!).">Scheduled Delivery</th>
+                                <th style="min-width: 140px;" data-column-id="adjustedDelivery" data-toggle="tooltip"
+                                    title="Any adjustments made to the route/stop just prior to, or after dispatch, such as delays from traffic, weather, or driver availability.">Adjusted Delivery</th>
+                                <th data-column-id="comments">Comments</th>
+                                <th></th>
+                            </tr>
+                            @{
+                                var indexStop = 0;
+                                var stops = route.Stops.Where(s => s.StopNumber != 0).OrderBy(s => s.StopNumber).ToList();
+                                while (indexStop < stops.Count())
+                                {
+                                    var stop = stops[indexStop];
+                                    var modifiedTypeColorStyle = "";
+                                    switch (stop.RoutePlanModificationTypeId)
+                                    //1 is system removed
+                                    //2 is system added
+                                    //3 is time change
+                                    //4 is manual remove
+                                    //5 is manual add
+                                    {
+                                        case 1:
+                                            modifiedTypeColorStyle = "tracker-stop-row-removed";
+                                            break;
+                                        case 2:
+                                            modifiedTypeColorStyle = "tracker-stop-row-added";
+                                            break;
+                                        case 3:
+                                            modifiedTypeColorStyle = "tracker-stop-row-modified";
+                                            break;
+                                        case 4:
+                                            modifiedTypeColorStyle = "tracker-stop-row-removed";
+                                            break;
+                                        case 5:
+                                            modifiedTypeColorStyle = "tracker-stop-row-added";
+                                            break;
+                                        default:
+                                            modifiedTypeColorStyle = "tracker-stop-row-default";
+                                            break;
+                                    }
+
+                                    //If current stop is removed, then give it a remove-stop class
+                                    <tr id="@(stop.RouteId)-row-@(stop.StopNumber)" class="@modifiedTypeColorStyle tracker-stop-row"
+                                        data-adjusted-stop-number="@stop.StopNumber"
+                                        data-stop-index="@index">
+
+                                        <td id="stop-@stop.StopNumber">@stop.StopNumber</td>
+                                        <td id="billto-@stop.StopNumber">@(stop.StopNumber > 0 ? ((int)(stop.BillTo)).ToString() : "")</td>
+                                        <td id="billto-@stop.StopNumber">@(stop.StopNumber > 0 ? ((int)(stop.ShipTo)).ToString() : "")</td>
+                                        <td style="width: 100%;" id="custname-@stop.StopNumber">@stop.CustomerName</td>
+                                        <td style="width: 100%;" id="concept-@stop.StopNumber">@stop.Concept</td>
+
+                                        <td id="street-@stop.StopNumber">@stop.Address1 @stop.Address2</td>
+                                        <td id="city-@stop.StopNumber">@stop.City</td>
+                                        <td id="state-@stop.StopNumber">@stop.State</td>
+                                        <td id="zip-@stop.StopNumber">@stop.Zip</td>
+                                        <td id="phone-@stop.StopNumber">
+                                            @{ var phone = "";
+                                                if (!string.IsNullOrEmpty(stop.Phone) && stop.Phone.Length == 10)
+                                                {
+                                                    phone = "(" + stop.Phone.Substring(0, 3) + ") " + stop.Phone.Substring(3, 3) + "-" + stop.Phone.Substring(6, 4);
+                                                }
+                                                @Html.Raw(phone);
+                                            }
+                                        </td>
+                                        <td id="email-@stop.StopNumber">@(!stop.EmailAddress.IsEmpty() ? Html.Raw("<a href=\"mailto:" + stop.EmailAddress + "\">" + stop.EmailAddress + "</a>") : Html.Raw(""))</td>
+
+                                        <td id="orderStatus-@stop.StopNumber" class="text-center">
+                                            @stop.OrderStatus
+                                        </td>
+
+                                        <td id="normalDelDate-@stop.StopNumber">@stop.PlannedDeliveryDateTime.Value.ToString("MM/dd/yy hh:mm tt")</td>
+                                        <td id="scheduledDelDate-@stop.StopNumber">@stop.ScheduledDeliveryDateTime.Value.ToString("MM/dd/yy hh:mm tt")</td>
+                                        <td id="adjustedDelDate-@stop.StopNumber">@stop.AdjustedDeliveryDateTime.Value.ToString("MM/dd/yy hh:mm tt")</td>
+                                        <td class="text-center">
+                                            <a href="javascript:void(0)" class="comment-dialog-trigger" data-stop-number="@stop.StopNumber" data-route-plan-id="@stop.RoutePlanId" data-bill-to="@((int)stop.BillTo)" data-ship-to="@((int)stop.ShipTo)" data-center-number="@stop.SygmaCenterNo">
+                                                <i class="fa fa-comments-o fa-2x" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                        <td class="text-center"><input type="checkbox" data-email="@stop.EmailAddress" data-route-id="@stop.RouteId" data-route-plan-id="@stop.RoutePlanId" class="select-stop"></td>
+                                    </tr>
+                                    indexStop = indexStop + 1;
+                                }
+                            }
+                        </table>
+                    </td>
+                </tr>
+                index = index + 1;
+            }
+        }
+    </tbody>
+</table>
+

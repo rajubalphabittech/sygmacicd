@@ -1,0 +1,170 @@
+﻿@model atm.Models.RouteStopViewModel
+@{
+    var reversePosition = Model.Position == "left" ? "right" : (Model.Position == "right" ? "left" : "right");
+}
+
+
+<div class="stop-list-content" data-position="@Model.Position" data-routeid="@Model.RouteId" data-routenumber="@Model.RouteNumber.ToUpperInvariant()">
+    <a href="javascript:void(0)" onclick="closeStopListSlider('@Model.Position')" class="stop-closebtn stop-list-toggle" data-position="@Model.Position" data-routeid="@Model.RouteId" data-routenumber="@Model.RouteNumber.ToUpperInvariant()">
+        <i class="fa fa-times" aria-hidden="true"></i>
+    </a>
+    <div class="overlay-content">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-10">
+                        ROUTE @Model.RouteNumber.ToUpperInvariant() - @Model.RouteName<br />
+                        (@Model.DispatchTime.Value.ToString("MM/dd hh:mm tt"))
+                    </div>
+                    <div class="col-xs-2 icon-column" style="display: flex; padding-left: 3px; padding-right: 3px; justify-content: flex-end;">
+                        <a href="javascript:void(0)" class="route-comment-readonly-dialog-trigger" style="padding-left: 3px; padding-right: 10px;" data-route-id="@Model.RouteId" data-center-number="@Model.SygmaCenterNo" data-route-number="@Model.RouteNumber.ToUpperInvariant()">
+                            <i class="fa fa-comments pull-right" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0)" class="all-stop-details-toggle" style="padding-left: 3px; padding-right: 10px;" data-position="@Model.Position" data-routeid="@Model.RouteId">
+                            <i class="fa fa-chevron-circle-down pull-right" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                @{
+                    var stops = Model.Stops.Where(s => s.StopNumber != 0).OrderBy(s => s.StopNumber).ToList();
+                    foreach (var item in stops)
+                    {
+                        var colorModifier = "";
+                        if (item.RoutePlanModificationTypeId == 1 || item.RoutePlanModificationTypeId == 4) { colorModifier = "stop-row-removed"; }
+                        else if (item.RoutePlanModificationTypeId == 2 || item.RoutePlanModificationTypeId == 5) { colorModifier = "stop-row-added"; }
+                        else if (item.RoutePlanModificationTypeId == 3) { colorModifier = "stop-row-modified"; }
+                        <div class="stop-item">
+                            <div class="row stop-header" data-modificationtypeid="@item.RoutePlanModificationTypeId" data-position="@Model.Position" data-order-id="@item.OrderId" data-centernumber="@item.SygmaCenterNo" data-routeid="@item.RouteId" data-routeplanid="@item.RoutePlanId" data-routenumber="@item.RouteNumber" data-stopnumber="@item.StopNumber" data-adjusteddeliverydatetime="@item.AdjustedDeliveryDateTime.Value.ToString("MM/dd/yyyy hh:mm tt")" data-planneddeliverydatetime="@item.PlannedDeliveryDateTime.Value.ToString("MM/dd/yyyy hh:mm tt")">
+                                <div class="col-xs-2 @colorModifier" title="@item.Comment">
+                                    <span style="font-size:14px;">@item.StopNumber</span>
+                                    @if (item.MoveStatus == atm.services.models.MoveStatuses.Complete)
+                                    {
+                                        <i class="move-status fa fa-check-square" data-route-plan-id="@item.RoutePlanId" aria-hidden="true" title="stop move is completed"></i>
+                                    }
+                                    else if (item.MoveStatus == atm.services.models.MoveStatuses.Pending)
+                                    {
+                                        <i class="move-status fa fa-pause" data-route-plan-id="@item.RoutePlanId" aria-hidden="true" title="pending stop move process ..."></i>
+                                    }
+                                    else if (item.MoveStatus == atm.services.models.MoveStatuses.Error)
+                                    {
+                                        <i class="move-status fa fa-exclamation" data-route-plan-id="@item.RoutePlanId" aria-hidden="true" title="stop move process encounters error(s)"></i>
+                                    }
+                                    else if (item.MoveStatus == atm.services.models.MoveStatuses.Cancelled)
+                                    {
+                                        <i class="move-status fa fa-ban" data-route-plan-id="@item.RoutePlanId" aria-hidden="true" title="stop move is cancelled"></i>
+                                    }
+                                    else if (item.MoveStatus == atm.services.models.MoveStatuses.PreProcessing)
+                                    {
+                                        <i class="move-status fa fa-square-o" data-route-plan-id="@item.RoutePlanId" aria-hidden="true" title="initiating stop move process ..."></i>
+                                    }
+                                    else if (item.MoveStatus == atm.services.models.MoveStatuses.PostProcessing)
+                                    {
+                                        <i class="move-status fa fa-square" data-route-plan-id="@item.RoutePlanId" aria-hidden="true" title="finishing stop move process ..."></i>
+                                    }
+                                    else if (item.MoveStatus == atm.services.models.MoveStatuses.Processing)
+                                    {
+                                        <i class="move-status fa fa-cog fa-spin" data-route-plan-id="@item.RoutePlanId" aria-hidden="true" title="processing stop move ..."></i>
+                                    }
+                                    else if (item.MoveStatus == atm.services.models.MoveStatuses.None)
+                                    {
+
+                                    }
+                                </div>
+                                <div class="col-xs-6">
+                                    @item.CustomerName <br />
+                                    @item.AdjustedDeliveryDateTime.Value.ToString("MM/dd hh:mm tt") @(item.AddOnOrderCount > 0 ? " | " + item.AddOnOrderCount.ToString() + " add-ons" : "") |
+                                    @item.ConceptCode
+                                </div>
+                                <div class="col-xs-4 icon-column pull-right">
+                                    <a href="javascript:void(0)" class="stop-comment-dialog-btn" data-stop-number="@item.StopNumber" data-route-plan-id="@item.RoutePlanId" data-bill-to="@((int)item.BillTo)" data-ship-to="@((int)item.ShipTo)" data-center-number="@item.SygmaCenterNo">
+                                        <i class="fa fa-comments-o pull-right" aria-hidden="true"></i>
+                                    </a>
+                                    @if (@Model.Position == "left")
+                                    {
+                                        <a href="javascript:void(0)" class="primary-stop-toggle" data-position="@Model.Position" data-routeid="@item.RouteId" data-routeplanid="@item.RoutePlanId" data-routenumber="@item.RouteNumber" data-stopnumber="@item.StopNumber">
+                                            <i style="color: #333333; opacity: 0.15; margin-top:-6px; padding-@reversePosition: 6px;" class="fa fa-level-down fa-rotate-270 fa-2x pull-right" aria-hidden="true"></i>
+                                        </a>
+
+                                        <a href="javascript:void(0)" class="stop-move-btn" data-order-id="@item.OrderId" data-canmove="@item.CanMove" data-position="@Model.Position" data-centernumber="@item.SygmaCenterNo" data-routeid="@item.RouteId" data-routeplanid="@item.RoutePlanId" data-routenumber="@item.RouteNumber" data-stopnumber="@item.StopNumber" data-adjusteddeliverydatetime="@item.AdjustedDeliveryDateTime.Value.ToString("MM/dd/yyyy hh:mm tt")" data-planneddeliverydatetime="@item.PlannedDeliveryDateTime.Value.ToString("MM/dd/yyyy hh:mm tt")">
+                                            @if (colorModifier == "stop-row-removed")
+                                            {
+                                                <i style="color: #eeeeee;" class="fa fa-arrows" aria-hidden="true" title="Can not move a removed stop."></i>
+                                            }
+                                            else if (item.OrderId == 0)
+                                            {
+                                                <i style="color: #eeeeee;" class="fa fa-arrows" aria-hidden="true" title="Can not move a stop without order."></i>
+                                            }
+                                            else if (item.EnableStopMove == 0)
+                                            {
+                                                <i style="color: #eeeeee;" class="fa fa-arrows" aria-hidden="true" title="Center locks stop movement."></i>
+                                            }
+                                            else if (!item.CanMove)
+                                            {
+                                                <i style="color: #eeeeee;" class="fa fa-arrows" aria-hidden="true" title="Cannot move a stop from a dispatched route"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fa fa-arrows" aria-hidden="true"></i>
+                                            }
+                                        </a>
+                                    }
+                                    <a href="javascript:void(0)" class="stop-detail-toggle" data-position="@Model.Position" data-routeplanid="@item.RoutePlanId">
+                                        <i class="fa fa-chevron-down pull-right" aria-hidden="true"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="stop-details" data-routeid="@item.RouteId" data-routenumber="@item.RouteNumber" data-stopnumber="@item.StopNumber" data-routeplanid="@item.RoutePlanId" data-weight="@item.Weight" data-cubes="@item.Cubes" data-cases="@item.Cases" style="display:none;">
+                                <div class="row">
+                                    <div class="col-xs-3 field-label">Weight:</div>
+                                    <div class="col-xs-2 field-value"> T: @string.Format("{0:#,0}", item.Weight) </div>
+                                    <div class="col-xs-2 field-value"> F: @string.Format("{0:#,0}", item.WeightFreezer) </div>
+                                    <div class="col-xs-2 field-value"> C: @string.Format("{0:#,0}", item.WeightCooler) </div>
+                                    <div class="col-xs-2 field-value"> D: @string.Format("{0:#,0}", item.WeightDry) </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-3 field-label">Cubes:</div>
+                                    <div class="col-xs-2 field-value"> T: @string.Format("{0:#,0}", item.Cubes) </div>
+                                    <div class="col-xs-2 field-value"> F: @string.Format("{0:#,0}", item.CubesFreezer) </div>
+                                    <div class="col-xs-2 field-value"> C: @string.Format("{0:#,0}", item.CubesCooler) </div>
+                                    <div class="col-xs-2 field-value"> D: @string.Format("{0:#,0}", item.CubesDry) </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-3 field-label">Cases:</div>
+                                    <div class="col-xs-2 field-value"> T: @string.Format("{0:#,0}", item.Cases) </div>
+                                    <div class="col-xs-2 field-value"> F: @string.Format("{0:#,0}", item.CasesFreezer) </div>
+                                    <div class="col-xs-2 field-value"> C: @string.Format("{0:#,0}", item.CasesCooler) </div>
+                                    <div class="col-xs-2 field-value"> D: @string.Format("{0:#,0}", item.CasesDry) </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-3 field-label">Customer:</div>
+                                    <div class="col-xs-2 field-value">@item.BillTo.ToString("0000")-@item.ShipTo.ToString("000")</div>
+                                    <div class="col-xs-2 field-label">Concept:</div>
+                                    <div class="col-xs-4 field-value">&nbsp;&nbsp;@item.Concept</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-3 field-label">Address:</div>
+                                    <div class="col-xs-7 field-value">
+                                        @item.Address1 @item.Address2
+                                        <br /> @item.City, @item.State @item.Zip
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-3 field-label">Phone:</div>
+                                    <div class="col-xs-9 field-value">@System.Text.RegularExpressions.Regex.Replace(item.Phone, @"(\d{3})(\d{3})(\d{4})", "($1) $2-$3")</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-3 field-label">Email:</div>
+                                    <div class="col-xs-9 field-value">@item.EmailAddress</div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+

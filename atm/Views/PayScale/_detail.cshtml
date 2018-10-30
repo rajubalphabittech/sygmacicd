@@ -1,0 +1,72 @@
+﻿@using System.Collections
+@model List<atm.Models.PayScaleRateViewModel>
+
+
+
+<table class="table table-bordered table-hover table-striped" id="ratesTable">
+	<tr>
+		<th class="text-left">@Html.DisplayNameFor(model => model[0].RateTypeDescription)</th>
+		<th class="text-center">@Html.DisplayNameFor(model => model[0].Rate)</th>
+		<th class="text-center">@Html.DisplayNameFor(model => model[0].IsEnabled)</th>
+		<th class="text-center">@Html.DisplayNameFor(model => model[0].IncludeInBase)</th>
+		<th class="text-center">@Html.DisplayNameFor(model => model[0].ProgressionRateApplies)</th>
+		<th class="text-center">@Html.DisplayNameFor(model => model[0].IncludeInGuaranteedPay)</th>
+	</tr>
+
+	@foreach (var item in Model)
+	{
+		<tr>
+			<td>
+				@Html.DisplayFor(modelItem => item.RateTypeDescription)
+			</td>
+			<td class="text-right">
+				@Html.DisplayFor(modelItem => item.Rate)
+			</td>
+			<td class="text-center">
+				@if (item.IsEnabled == true)
+				{
+
+					<i class="fa fa-check-square-o " />
+				}
+				else
+				{
+					<i class="fa fa-square-o" />
+				}
+			</td>
+			<td class="text-center">
+				@if (item.IncludeInBase == true)
+				{
+
+					<i class="fa fa-check-square-o" />
+				}
+				else
+				{
+					<i class="fa fa-square-o" />
+				}
+			</td>
+			<td class="text-center">
+				@if (item.ProgressionRateApplies == true)
+				{
+
+					<i class="fa fa-check-square-o" />
+				}
+				else
+				{
+					<i class="fa fa-square-o" />
+				}
+			</td>
+			<td class="text-center">
+				@if (item.IncludeInGuaranteedPay == true)
+				{
+
+					<i class="fa fa-check-square-o" />
+				}
+				else
+				{
+					<i class="fa fa-square-o" />
+				}
+			</td>
+
+		</tr>
+	}
+</table>

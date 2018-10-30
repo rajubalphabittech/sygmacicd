@@ -1,0 +1,101 @@
+﻿@model atm.Models.RoutePageableListViewModel
+@using atm.Models;
+@using PagedList.Mvc;
+
+<table id="routes-table" class="table table-hover table-striped table-bordered table-responsive" style="width:100%">
+    <thead>
+        <tr>
+            <th data-column-id="routeNumber">
+                <a href="#" data-sortField="@RouteSortFields.RouteNumber" data-currentSortParam="@ViewBag.CurrentSortParam" data-sortParam="@(RouteSortFields.RouteNumber + "." + (Model.SortDirection == SortDirections.Ascending ? SortDirections.Descending : SortDirections.Ascending) )" class="route-header-sortable">
+                    Route #
+                </a>
+            </th>
+            <th data-column-id="routeName">
+                <a href="#" data-sortField="@RouteSortFields.RouteName" data-currentSortParam="@ViewBag.CurrentSortParam" data-sortParam="@(RouteSortFields.RouteName + "." + (Model.SortDirection == SortDirections.Ascending ? SortDirections.Descending : SortDirections.Ascending))" class="route-header-sortable">
+                    Route Name
+                </a>
+            </th>
+            <th data-column-id="stops">
+                <a href="#" data-sortField="@RouteSortFields.NumberOfStops" data-currentSortParam="@ViewBag.CurrentSortParam" data-sortParam="@(RouteSortFields.NumberOfStops + "." + (Model.SortDirection == SortDirections.Ascending ? SortDirections.Descending : SortDirections.Ascending))" class="route-header-sortable">
+                    Stops
+                </a>
+            </th>
+            <th data-column-id="dispatchTime">
+                <a href="#" data-sortField="@RouteSortFields.DispatchTime" data-currentSortParam="@ViewBag.CurrentSortParam" data-sortParam="@(RouteSortFields.DispatchTime + "." + (Model.SortDirection == SortDirections.Ascending ? SortDirections.Descending : SortDirections.Ascending))" class="route-header-sortable">
+                    Dispatch
+                </a>
+            </th>
+            <th data-column-id="totalweight">
+                <a href="#" data-sortField="@RouteSortFields.Weight" data-currentSortParam="@ViewBag.CurrentSortParam" data-sortParam="@(RouteSortFields.Weight + "." + (Model.SortDirection == SortDirections.Ascending ? SortDirections.Descending : SortDirections.Ascending))" class="route-header-sortable">
+                    Weight
+                </a>
+            </th>
+            <th data-column-id="totalcubes">
+                <a href="#" data-sortField="@RouteSortFields.Cubes" data-currentSortParam="@ViewBag.CurrentSortParam" data-sortParam="@(RouteSortFields.Cubes + "." + (Model.SortDirection == SortDirections.Ascending ? SortDirections.Descending : SortDirections.Ascending))" class="route-header-sortable">
+                    Cubes
+                </a>
+            </th>
+            <th data-column-id="totalcases">
+                <a href="#" data-sortField="@RouteSortFields.Cases" data-currentSortParam="@ViewBag.CurrentSortParam" data-sortParam="@(RouteSortFields.Cases + "." + (Model.SortDirection == SortDirections.Ascending ? SortDirections.Descending : SortDirections.Ascending))" class="route-header-sortable">
+                    Cases
+                </a>
+            </th>
+            <th data-column-id="routeOffset">Offset Minutes / Cascade</th>
+            <th data-column-id="routeStatus">Route Status</th>
+            <th data-column-id="editColumn"><i class="fa fa-columns edit-column" aria-hidden="true"></i></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            foreach (var route in Model.PagedRoutes)
+            {
+                <tr data-id="@(route.RouteNumber + '-' + route.SygmaCenterNo.ToString())" data-route-id="@(route.RouteId.ToString())" data-number=" @route.RouteNumber.ToLower()"
+                    data-name="@route.RouteName.ToLower()" data-center="@route.SygmaCenterNo.ToString()" data-route-modified="@route.RouteWasModified.ToString()" data-route-dispatch-time="@route.DispatchTime.ToString()">
+                    <td data-column-id="routeNumber">@route.RouteNumber</td>
+                    <td data-column-id="routeName">@route.RouteName</td>
+                    <td data-column-id="stops">@route.NumberOfStops</td>
+                    <td data-column-id="dispatchTime" id="@("DispatchTime_" + route.RouteNumber)">@Convert.ToDateTime(route.DispatchTime).ToString("MM/dd/yy HH:mm")</td>
+                    <td data-column-id="totalweight">
+                        @string.Format("{0:N}", route.TotalWeight)<br />
+                        F: @string.Format("{0:N}", route.TotalWeightFreezer) , C: @string.Format("{0:N}", route.TotalWeightCooler) , D: @string.Format("{0:N}", route.TotalWeightDry)
+                    </td>
+                    <td data-column-id="totalcubes">
+                        @string.Format("{0:N}", route.TotalCubes)<br />
+                        F: @string.Format("{0:N}", route.TotalCubesFreezer) , C: @string.Format("{0:N}", route.TotalCubesCooler) , D: @string.Format("{0:N}", route.TotalCubesDry)
+                    </td>
+                    <td data-column-id="totalcases">
+                        @string.Format("{0:N}", route.TotalCases)<br />
+                        F: @string.Format("{0:N}", route.TotalCasesFreezer) , C: @string.Format("{0:N}", route.TotalCasesCooler) , D: @string.Format("{0:N}", route.TotalCasesDry)
+                    </td>
+                    <td data-column-id="routeOffset"></td>
+                    <td data-column-id="routeStatus"></td>
+                    <td data-column-id="editColumn" class="edit-column">
+                        <i class="fa fa-plus pull-right show-hide-stops"
+                           data-id="@(route.RouteId.ToString())"
+                           aria-hidden="true"></i>
+                    </td>
+                </tr>
+                <tr data-number="@route.RouteNumber.ToLower()" data-route-id="@(route.RouteId.ToString())" data-name="@route.RouteName.ToLower()"
+                    data-route-modified="@route.RouteWasModified.ToString()" class="hidden" data-route-dispatch-time="@route.DispatchTime.ToString()">
+                    <td colspan="10">
+                        <div class="stop-list" data-route-id="@(route.RouteId.ToString())" )"></div>
+                    </td>
+                </tr>
+                <tr class="hidden"></tr>
+            }
+        }
+    </tbody>
+</table>
+<br />
+<div id='Paging' style="text-align:center">
+    Page @(Model.PagedRoutes.PageCount < Model.PagedRoutes.PageNumber ? 0 : Model.PagedRoutes.PageNumber)
+    of @Model.PagedRoutes.PageCount
+
+    @Html.PagedListPager(Model.PagedRoutes, page => "javascript:pageList(" + page + ", '" + ViewBag.CurrentSortParam + "');")
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#totalRowsLabel").html("Total Count: @Model.PagedRoutes.TotalItemCount");
+    });
+</script>

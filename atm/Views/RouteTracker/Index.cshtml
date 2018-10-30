@@ -1,0 +1,147 @@
+﻿@model atm.Models.RouteTrackerViewModel
+
+@section stylesheets{
+    @Styles.Render("~/Content/rt")
+}
+<style type="text/css">
+       #map-canvas {
+           height: 100%;
+           min-height: 600px;
+       }
+</style>
+<div id="modalPopup" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div id="dataContent" class="modal-content"></div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="pageTitle">@ViewBag.Title</div>
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading" style="display:none">
+            </div>
+            <div class="panel-body" id="filterContainer">
+                <form>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-2 form-group form-group-sm">
+                                <label for="selectCenterDropdown" class="rt-filter-label">Center</label>
+                                @Html.DropDownList("centerSelector", Model.CenterSelectList, "Select Center...", new { @class = "form-control", @id = "selectCenterDropdown" })
+                            </div>
+                            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-2 form-group form-group-sm" style="min-width:220px;">
+                                <label for="dateRangeDropdown" class="rt-filter-label">Date Range</label>
+                                @Html.DropDownList("dateRange", Model.DateRangeList, new { @class = "form-control route-tracker-filter route-tracker-filter-date-range", @id = "dateRangeDropdown" })
+                                <input id="startDateInput" class="form-control d-inline start-date route-tracker-filter route-tracker-filter-date" type="date" /> to
+                                <input id="endDateInput" class="form-control d-inline end-date route-tracker-filter route-tracker-filter-date" type="date" />
+                            </div>
+                            @*<div class="col-xs-12 col-sm-3 col-md-3 col-lg-2 form-group form-group-sm" id="StartDateDiv">
+                                    <label for="startDateInput" class="rt-filter-label">From Date</label>
+                                </div>
+                                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-2 form-group form-group-sm" id="EndDateDiv">
+                                    <label for="endDateInput" class="rt-filter-label">To Date</label>
+                                </div>*@
+                            <div id="modifiedTypeSelectListDiv" class="col-xs-12 col-sm-3 col-md-3 col-lg-2 form-group form-group-sm">
+                                <label for="modifiedTypeSelectList" class="rt-filter-label">Route Modification Types</label>
+                                @Html.DropDownList("modifiedTypeSelectList", Model.ModifiedTypeSelectList, new { @class = "form-control multiselect-ui route-tracker-filter input-sm", @multiple = "multiple" })
+                            </div>
+
+                            <div id="ShowConceptSelectionDiv" class="col-xs-12 col-sm-3 col-md-3 col-lg-2 form-group form-group-sm hidden">
+                                <label for="ConceptTypeList" class="rt-filter-label">Concept Types</label>
+                                @Html.DropDownList("ConceptTypeList", Model.ConceptTypeList, new { @class = "form-control multiselect-ui route-tracker-filter input-sm", @multiple = "multiple" })
+                            </div>
+                            <div id="EarlyLateSelectionDiv" class="col-xs-12 col-sm-3 col-md-3 col-lg-2 form-group form-group-sm hidden">
+                                <label for="EarlyLateSelection" class="rt-filter-label">Early/Late</label>
+                                <select id="EarlyLateSelection" multiple="multiple" class="form-control multiselect-ui route-tracker-filter input-sm">
+                                    <option value="0">On-time</option>
+                                    <option value="-1">Early</option>
+                                    <option value="1">Late</option>
+                                </select>
+                            </div>
+                            @*<div id="RouteTrackerFilterDispatchDay" class="col-xs-12 col-sm-3 col-md-3 col-lg-2 form-group form-group-sm hidden">
+                                    <label for="FilterRoutesByDepartDay" class="rt-filter-label">Dispatch Day</label>
+                                    @Html.DropDownList("FilterRoutesByDepartDay", Model.FilterByDispatchDay, new { @class = "form-control multiselect-ui route-tracker-filter", @multiple = "multiple" })
+                                </div>*@
+                        </div>
+                        <div class="row">
+                            <div id="RouteTrackerFilterSearch" class="col-xs-12 col-sm-3 col-md-3 col-lg-2 form-group form-group-sm hidden">
+                                <label for="searchInputGroup" class="rt-filter-label">&nbsp;</label>
+                                <input type="text" class="form-control route-tracker-filter" maxlength="20" id="routeSearch" placeholder="Search...">
+                            </div>
+                            <div id="RouteTrackerFilterBillTo" class="col-xs-12 col-sm-3 col-md-3 col-lg-2 form-group form-group-sm hidden">
+                                <label class="rt-filter-label">Bill To &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ship To</label><br />
+                                <input type="number" class="form-control route-filter-bill-to strictly-numeric-only" maxlength="5" id="routeStopBillTo" placeholder="12345">
+                                <input type="number" class="form-control route-filter-ship-to strictly-numeric-only" maxlength="3" id="routeStopShipTo" placeholder="123">
+                                <button type="button" class="btn btn-default btn-sm tracker-search-button" id="searchFilterButton">
+                                    <span class="fa fa-search" aria-hidden="true"></span>
+                                </button>
+                            </div>
+                            <div id="RouteOrderSelectionDiv" class="col-xs-12 col-sm-3 col-md-3 col-lg-2 form-group form-group-sm hidden">
+                                <label for="RouteOrderSelection" class="rt-filter-label">With Order Option</label>
+                                <select id="RouteOrderSelection" multiple="multiple" class="form-control multiselect-ui route-tracker-filter input-sm">
+                                    <option value="1">No Orders</option>
+                                    <option value="2">Partial Orders</option>
+                                    <option value="3">All Orders Only</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+            <h4><span id="totalRowsLabel" class="label label-default">Row Count: 0</span></h4>
+        </div>
+        <div class="col-xs-1 col-sm-4 col-md-4 col-lg-6">
+
+        </div>
+        <div class="col-xs-9 col-sm-6 col-md-6 col-lg-4 btn-toolbar" role="toolbar">
+            @{
+                var userName = this.Context.User.Identity.Name.ToUpperInvariant();
+                if (userName.Contains("JSET0867") || userName.Contains("JKOP0253") || userName.Contains("CROB0868"))
+                {
+                    <div class="btn-group pull-right float-right" role="group" style="display: none;">
+                        <button type="button" class="btn btn-default route-notification-button" id="routeNotificationButton">Notifications</button>
+                    </div>
+                }
+            }
+            <div class="btn-group pull-right float-right" role="group">
+                <button type="button" class="btn btn-info tracker-column-options-button" id="columnOptionsButton">Column Options</button>
+            </div>
+            <div class="btn-group pull-right float-right" role="group">
+                <button type="button" class="btn btn-success tracker-export-button" id="excelExportButton">Export to Excel</button>
+            </div>
+            <div class="btn-group pull-right float-right" role="group">
+                <button type="button" class="btn btn-success tracker-add-comment-button" id="trackerAddCommentButton">Add Comment</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="routeList" style="clear:both;"></div>
+        </div>
+    </div>
+</div>
+<div id="export-dialog-message" title="RouteList Excel file now downloading" style="display:none">
+    <p>
+        You will now begin downloading the RouteList Excel file. This will take a minute to complete. You may continue working while this file downloads.
+    </p>
+</div>
+
+<div id="columnOptionsDialog" title="Column Options" class="column-option-dialog" style="display:none">
+</div>
+
+<div id="stopMovedModal" class="modal fade moved-stop-dialog" display:none" role="dialog">
+    <div class="modal-dialog modal-stop-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div id="movedStopPopupContent"></div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    @Scripts.Render("~/bundles/routetracker")
+}

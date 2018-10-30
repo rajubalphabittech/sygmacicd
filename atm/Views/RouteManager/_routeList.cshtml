@@ -1,0 +1,111 @@
+﻿@model atm.Models.RouteListViewModel
+@using atm.services.models
+@{
+    var list = Model.OrderBy(i => i.RouteNumber);
+    switch (Model.SortField)
+    {
+        case RouteSortFields.RouteName:
+            list = Model.SortDirection == SortDirections.Ascending ? Model.OrderBy(i => i.RouteName) : Model.OrderByDescending(i => i.RouteName);
+            break;
+        case RouteSortFields.Duration:
+            list = Model.SortDirection == SortDirections.Ascending ? Model.OrderBy(i => i.TotalHours) : Model.OrderByDescending(i => i.TotalHours);
+            break;
+        case RouteSortFields.NumberOfStops:
+            list = Model.SortDirection == SortDirections.Ascending ? Model.OrderBy(i => i.NumberOfStops) : Model.OrderByDescending(i => i.NumberOfStops);
+            break;
+        case RouteSortFields.Cases:
+            list = Model.SortDirection == SortDirections.Ascending ? Model.OrderBy(i => i.TotalCases) : Model.OrderByDescending(i => i.TotalCases);
+            break;
+        case RouteSortFields.Weight:
+            list = Model.SortDirection == SortDirections.Ascending ? Model.OrderBy(i => i.TotalWeight) : Model.OrderByDescending(i => i.TotalWeight);
+            break;
+        case RouteSortFields.Cubes:
+            list = Model.SortDirection == SortDirections.Ascending ? Model.OrderBy(i => i.TotalCubes) : Model.OrderByDescending(i => i.TotalCubes);
+            break;
+        case RouteSortFields.DispatchTime:
+            list = Model.SortDirection == SortDirections.Ascending ? Model.OrderBy(i => i.AdjustedDispatchTime) : Model.OrderByDescending(i => i.AdjustedDispatchTime);
+            break;
+        case RouteSortFields.Proximity:
+            if (Model.StopProximitySearch)
+            {
+                list = Model.SortDirection == SortDirections.Ascending ? Model.OrderBy(i => i.ClosestStopProximity) : Model.OrderByDescending(i => i.ClosestStopProximity);
+            }
+            else
+            {
+                list = Model.SortDirection == SortDirections.Ascending ? Model.OrderBy(i => i.Proximity) : Model.OrderByDescending(i => i.Proximity);
+            }
+            break;
+        default:
+            list = Model.SortDirection == SortDirections.Ascending ? Model.OrderBy(i => i.RouteNumber) : Model.OrderByDescending(i => i.RouteNumber);
+            break;
+    }
+
+    var reversePosition = Model.Position == "left" ? "right" : (Model.Position == "right" ? "left" : "right");
+}
+
+@foreach (var item in list)
+{
+    <div data-routeid="@item.RouteId" data-routenumber="@item.RouteNumber.ToUpperInvariant()" data-routename="@item.RouteName.ToUpperInvariant()" data-position="@Model.Position"
+         data-totalweight="@item.TotalWeight" data-totalcubes="@item.TotalCubes" data-totalcases="@item.TotalCases" data-numberofstops="@item.NumberOfStops" class="route-item">
+        <div data-routeid="@item.RouteId" data-routenumber="@item.RouteNumber.ToUpperInvariant()" data-routename="@item.RouteName.ToUpperInvariant()" data-position="@Model.Position" class="route-header">
+            <div class="row  @(Model.Position == "right" ? "row-right" : "row-left")">
+                <div class="col-xs-1 @(Model.Position == "right" ? "col-xs-push-1" : "")">
+                    <input type="checkbox" data-position="@Model.Position" class="form-control route-in-map">
+                </div>
+                <div class="col-xs-9 @(Model.Position == "right" ? "col-xs-push-1" : "")">
+                    <p>
+                        <i class="fa fa-road"></i>&nbsp;@item.RouteNumber.ToUpperInvariant() - @item.RouteName<br />
+                        @((item.TotalATMMiles > item.TotalAS400Miles ? item.TotalATMMiles : item.TotalAS400Miles) + " miles") | @(item.NumberOfStops + " stops") | @(string.Format("{0:N}", item.TotalHours) + " hours") |
+                        @item.AdjustedDispatchTime.Value.ToString("MM/dd hh:mm tt") dispatch
+                        @(Model.Position == "right" && item.NearRouteId > 0 ? " | " + string.Format("{0:#,0}", item.Proximity) + " miles " + item.CompassHeading + " from " + item.NearRouteNumber : "")
+                        @(Model.Position == "right" && item.ClosestStopRoutePlanId > 0 ? " | Stop " + (item.ClosestStop != null ? item.ClosestStop.StopNumber : 0) + " " + (item.ClosestStopProximity < 1.0 ? "less than a mile " : string.Format("{0:#,0}", item.ClosestStopProximity) + " miles ") + item.ClosestStopCompassHeading + " from Stop " + item.NearStopNumber : "")
+                    </p>
+                    <div class="route-header-info">
+                        <span class="label @(item.TotalWeight >= 38000 ? "label-danger" : "label-default")">Weight: @string.Format("{0:#,0}", item.TotalWeight)</span>
+                        <span class="label @(item.TotalCubes >= 1800 ? "label-danger" : "label-default")">Cubes: @string.Format("{0:#,0}", item.TotalCubes)</span>
+                        <span class="label label-default">Cases: @string.Format("{0:#,0}", item.TotalCases)</span>
+                    </div>
+                </div>
+                <div class="icon-column col-xs-2 @(Model.Position == "right" ? "col-xs-pull-11" : "")">
+                    <a href="javascript:void(0)" class="primary-route-toggle" data-position="@Model.Position" data-routeid="@item.RouteId" style="display:none;">
+                        <i style="color: #333333; opacity: 0.15; margin-top:-3px; padding-@reversePosition: 6px;" class="fa fa-level-down fa-rotate-270 fa-4x pull-@reversePosition" aria-hidden="true"></i>
+                    </a>
+                    <a href="javascript:void(0)" class="stop-list-toggle @(Model.Position == "right" ? "stop-list-toggle-right" : "")" data-routenumber="@item.RouteNumber.ToUpperInvariant()" data-position="@Model.Position" data-routeid="@item.RouteId" style="display:none;">
+                        <i style="color: #337ab7; opacity: 0.25; margin-left:3px; " class="fa fa-chevron-@reversePosition fa-4x pull-@Model.Position" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="route-details" data-routenumber="@item.RouteNumber.ToUpperInvariant()">
+            <div class="row route-details-capacity">
+                <div class="col-xs-5 route-details-capacity-column">
+                    <div class="row">
+                        <div class="col-xs-6 field-label">Weight:</div>
+                        <div class="col-xs-6 field-value">
+                            F: @string.Format("{0:#,0}", item.TotalWeightFreezer)<br />C: @string.Format("{0:#,0}", item.TotalWeightCooler)<br />D: @string.Format("{0:#,0}", item.TotalWeightDry)<br />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-4 route-details-capacity-column">
+                    <div class="row">
+                        <div class="col-xs-6 field-label">Cubes:</div>
+                        <div class="col-xs-6 field-value">
+                            F: @string.Format("{0:#,0}", item.TotalCubesFreezer)<br />C: @string.Format("{0:#,0}", item.TotalCubesCooler)<br />D: @string.Format("{0:#,0}", item.TotalCubesDry)<br />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-3 route-details-capacity-column">
+                    <div class="row">
+                        <div class="col-xs-7 field-label">Cases:</div>
+                        <div class="col-xs-5 field-value">
+                            F: @string.Format("{0:#,0}", item.TotalCasesFreezer)<br />C: @string.Format("{0:#,0}", item.TotalCasesCooler)<br />D: @string.Format("{0:#,0}", item.TotalCasesDry)<br />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row route-details-concept">
+                <div class="col-xs-12"><span class="field-label">Concept: </span>@string.Join(", ", item.Concepts)</div>
+            </div>
+        </div>
+    </div>
+}

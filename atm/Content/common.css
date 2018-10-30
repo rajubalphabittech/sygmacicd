@@ -1,0 +1,386 @@
+﻿/* Move down content because we have a fixed navbar that is 50px tall */
+
+html {
+    font-size: 11px;
+    font-family: 'Helvetica Neue', helvetica, Verdana, Arial, geneva;
+}
+
+body {
+    padding-top: 60px;
+    padding-bottom: 20px;
+}
+
+/* Wrapping element */
+/* Set some basic padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Set widths on the form inputs since otherwise they're 100% wide */
+input,
+select,
+textarea {
+    max-width: 600px;
+}
+
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 768px) {
+    .jumbotron {
+        margin-top: 20px;
+    }
+
+    .body-content {
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 0px;
+        margin-top: -10px;
+    }
+}
+
+div {
+    font-size: 11px;
+}
+
+th {
+    font-weight: bold;
+}
+
+td {
+    font-size: 11px;
+}
+
+.pageTitle {
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.pageSubtitle {
+    font-weight: normal;
+    font-size: 18px;
+    color: #808080;
+}
+
+.ui-dialog {
+    z-index: 1100;
+}
+
+.input-xs {
+    height: 22px;
+    padding: 2px 5px;
+    font-size: 12px;
+    line-height: 1.5; /* If Placeholder of the input is moved up, rem/modify this. */
+    border-radius: 3px;
+}
+
+.fa-spinner.fa-5x {
+    margin-top: 25px;
+    margin-left: 48%;
+    margin-bottom: 25px;
+}
+
+.toast {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1001;
+    left: 50%;
+    bottom: 30px;
+    font-size: 17px;
+}
+
+    .toast.toast-is-shown {
+        visibility: visible;
+        -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+
+.global-spinner-layer {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.3);
+    width: 100%;
+    height: 100%;
+    top: 0;
+}
+
+    .global-spinner-layer i.fa-spinner {
+        margin: auto;
+        color: black;
+        margin-top: 25%;
+    }
+
+.loading-cover {
+    background: #dedede;
+    display: none;
+    position: relative;
+    width: auto;
+    min-height: 200px;
+    height: 100%;
+    opacity: 0.5;
+    padding-top: 80px;
+}
+
+
+/* ---ROUTE MANAGER --- */
+
+.panel {
+    margin-bottom: 10px;
+}
+
+.panel-heading {
+    font-weight: bold;
+    padding: 10px 10px;
+}
+
+.panel-body {
+    padding: 10px;
+}
+
+    .panel-body p {
+        margin-bottom: 0px;
+    }
+
+    .panel-body .checkbox {
+        margin-top: 0px;
+        margin-left: 20px;
+    }
+
+.btn-collapse {
+    position: absolute;
+    padding: 8px 12px;
+    border-radius: 5px 5px 0 0;
+    top: 82px;
+    background: rgba(51, 122, 183, 0.09);
+    transform: rotate(-90deg);
+    z-index: 10;
+}
+
+    .btn-collapse.btn-collapse-left {
+        left: 0;
+        margin-left: -24px;
+    }
+
+    .btn-collapse.btn-collapse-right {
+        right: 0;
+        margin-right: -24px;
+    }
+
+.overlay {
+    /* Height & width depends on how you want to reveal the overlay (see JS below) */
+    height: 100%;
+    width: 0;
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    top: 45px;
+    padding: 10px 15px;
+    background: rgba(51, 122, 183, 0.09);
+    overflow-x: hidden;
+    /* Disable horizontal scroll */
+    transition: 0.5s;
+    /* 0.5 second transition effect to slide in or slide down the overlay (height or width, depending on reveal) */
+}
+
+    .overlay.overlay-left {
+        left: 0;
+    }
+
+    .overlay.overlay-right {
+        right: 0;
+    }
+
+    /* The navigation links inside the overlay */
+    .overlay a {
+        padding: 8px;
+        text-decoration: none;
+        font-size: 11px;
+        display: block;
+        /* Display block instead of inline */
+        transition: 0.3s;
+        /* Transition effects on hover (color) */
+    }
+
+    /* Position the close button (top right corner) */
+    .overlay .closebtn, .stop-list-content .stop-closebtn {
+        position: absolute;
+        top: 3px;
+        right: 5px;
+    }
+
+    .overlay .restorebtn {
+        position: absolute;
+        top: 1px;
+        right: 25px;
+    }
+
+    .overlay .minimizebtn {
+        position: absolute;
+        top: 1px;
+        right: 25px;
+    }
+
+.overlay-left.route-filter.filter-is-collapsed,
+.overlay-left.stop-list.stop-list-is-collapsed {
+    left: -30px;
+    width: 0;
+}
+
+.overlay-left.route-filter.filter-is-displayed,
+.overlay-left.stop-list.stop-list-is-displayed {
+    left: 25%;
+    width: 18%;
+}
+
+    .overlay-left.route-filter.filter-is-displayed.filter-is-stretched,
+    .overlay-left.stop-list.stop-list-is-displayed.stop-list-is-stretched {
+        left: 5%;
+        width: 18%;
+    }
+
+.overlay-right.route-filter.filter-is-collapsed,
+.overlay-right.stop-list.stop-list-is-collapsed {
+    right: -30px;
+    width: 0;
+}
+
+.overlay-right.route-filter.filter-is-displayed,
+.overlay-right.stop-list.stop-list-is-displayed {
+    right: 25%;
+    width: 18%;
+}
+
+.overlay-right.route-filter.filter-is-stretched,
+.overlay-right.stop-list.stop-list-is-stretched {
+    right: 5%;
+    width: 18%;
+}
+
+/* Position the content inside the overlay */
+
+.overlay-content {
+    position: relative;
+    top: 3%;
+    /* 25% from the top */
+    width: 100%;
+    /* 100% width */
+    margin-top: 8px;
+    /* 30px top margin to avoid conflict with the close button on smaller screens */
+}
+
+    .overlay-content .form-group {
+        margin-bottom: 5px;
+    }
+
+    .overlay-content .panel-body label {
+        margin-top: 5px;
+    }
+
+/* Route Manager Filter panel */
+.route-filter-center-selector {
+    width: 300px;
+}
+
+.filter-category span {
+    vertical-align: sub;
+    font-size: 1.1em;
+}
+
+.filter-category .form-control {
+    display: inline-block;
+    width: auto;
+}
+
+.filter-category input[type=number].form-control {
+    max-width: 70px;
+}
+
+.filter-category input[type=checkbox].form-control {
+    margin-top: 0px
+}
+
+.filter-category span {
+    font-size: 0.9em;
+}
+
+.form-control.route-filter-dispatch-start-date, .form-control.route-filter-dispatch-end-date, .form-control.route-filter-weekending-date {
+    width: 85px;
+    height: 18px;
+    padding: 2px 2px 2px 2px;
+    font-size: 0.9em;
+    display: inline-flex;
+    margin-top: 3px;
+}
+
+.form-control.route-filter-bill-to {
+    width: 60px;
+    display: inline-flex;
+}
+
+.form-control.route-filter-ship-to {
+    width: 45px;
+    display: inline-flex;
+}
+
+    .form-control.route-filter-dispatch-start-date::-webkit-inner-spin-button, .form-control.route-filter-dispatch-end-date::-webkit-inner-spin-button, .form-control.route-filter-weekending-date::-webkit-inner-spin-button, .form-control.route-filter-bill-to::-webkit-inner-spin-button, .form-control.route-filter-ship-to::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        display: none;
+    }
+
+    .form-control.route-filter-dispatch-start-date::-webkit-clear-button, .form-control.route-filter-dispatch-end-date::-webkit-clear-button, .form-control.route-filter-weekending-date::-webkit-clear-button, .form-control.route-filter-bill-to::-webkit-clear-button, .form-control.route-filter-ship-to::-webkit-clear-button {
+        -webkit-appearance: none;
+        display: none;
+    }
+
+.field-label {
+    text-align: right;
+    padding-left: 5px;
+    padding-right: 2px;
+    font-weight: bold;
+}
+
+.field-value {
+    white-space: nowrap;
+    text-align: left;
+    padding-left: 2px;
+    padding-right: 5px;
+}
+
+.info-window {
+    text-align: left;
+}
+
+/* Activity Info Dialog / Comment Dialog */
+table.comment-table {
+    width: 100%;
+}
+
+    table.comment-table th {
+        background-color: #bebebe;
+        border: 1px solid #a9b2bb;
+        font-weight: bold;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    table.comment-table td {
+        border: 1px solid #888888;
+        padding-left: 3px;
+        padding-right: 3px;
+    }
+
+.comment-table-stripe {
+    background-color: #ededed;
+}
+
+.comment-dialog {
+    width: 500px;
+}
+/* End Comment Dialog */

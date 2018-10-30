@@ -1,0 +1,587 @@
+﻿@model atm.Models.RouteStopViewModel
+@using atm.services.models
+
+<form id="frm@(Model.RouteId)">
+    @Html.HiddenFor(r => r.RouteId)
+    @Html.HiddenFor(r => r.RouteNumber)
+    @Html.HiddenFor(r => r.SygmaCenterNo)
+    @Html.HiddenFor(r => r.RouteName)
+    @Html.HiddenFor(r => r.RouteDate)
+
+    @{
+        var columnToDisplayInOrder = Model.StopColumnOption.Columns.Where(c => bool.Parse(c.Visible)).OrderBy(c => int.Parse(c.DisplayOrder));
+    }
+
+    <table id="route-@Model.RouteId" class="stopTable" style="width:100%">
+        <thead>
+        </thead>
+        <tbody>
+            <tr>
+                @foreach (var col in columnToDisplayInOrder)
+                {
+                    switch ((StopColumns)(int.Parse(col.ID)))
+                    {
+                        case StopColumns.StopNumber:
+                            <th data-column-id="stop">Stop</th>
+                            break;
+                        case StopColumns.BillTo:
+                            <th data-column-id="bill">Bill To</th>
+                            break;
+                        case StopColumns.ShipTo:
+                            <th data-column-id="ship">Ship To</th>
+                            break;
+                        case StopColumns.Customer:
+                            <th data-column-id="cust">Customer</th>
+                            break;
+                        case StopColumns.Concept:
+                            <th data-column-id="concept">Concept</th>
+                            break;
+                        case StopColumns.Street:
+                            <th data-column-id="street">Street</th>
+                            break;
+                        case StopColumns.City:
+                            <th data-column-id="city">City</th>
+                            break;
+                        case StopColumns.State:
+                            <th data-column-id="state">State</th>
+                            break;
+                        case StopColumns.Zip:
+                            <th data-column-id="zip">Zip</th>
+                            break;
+                        case StopColumns.Phone:
+                            <th data-column-id="phone" class="minWidthGridColumn-med">Phone</th>
+                            break;
+                        case StopColumns.Email:
+                            <th data-column-id="email">Email</th>
+                            break;
+                        case StopColumns.OrderStatus:
+                            <th data-column-id="orderStatus">Order Status</th>
+                            break;
+                        case StopColumns.WeightTotal:
+                            <th data-column-id="weight">LBs</th>
+                            break;
+                        case StopColumns.WeightFreezer:
+                            <th data-column-id="weight-freezer">Freezer LBs</th>
+                            break;
+                        case StopColumns.WeightCooler:
+                            <th data-column-id="weight-cooler">Cooler LBs</th>
+                            break;
+                        case StopColumns.WeightDry:
+                            <th data-column-id="weight-dry">Dry LBs</th>
+                            break;
+                        case StopColumns.CubesTotal:
+                            <th data-column-id="cubes">Cubes</th>
+                            break;
+                        case StopColumns.CubesFreezer:
+                            <th data-column-id="cubes-freezer">Freezer Cubes</th>
+                            break;
+                        case StopColumns.CubesCooler:
+                            <th data-column-id="cubes-cooler">Cooler Cubes</th>
+                            break;
+                        case StopColumns.CubesDry:
+                            <th data-column-id="cubes-dry">Dry Cubes</th>
+                            break;
+                        case StopColumns.CasesTotal:
+                            <th data-column-id="cases">Cases</th>
+                            break;
+                        case StopColumns.CasesFreezer:
+                            <th data-column-id="cases-freezer">Freezer Cases</th>
+                            break;
+                        case StopColumns.CasesCooler:
+                            <th data-column-id="cases-cooler">Cooler Cases</th>
+                            break;
+                        case StopColumns.CasesDry:
+                            <th data-column-id="cases-dry">Dry Cases</th>
+                            break;
+                        case StopColumns.ArrivalDelivery:
+                            <th data-column-id="arrivalDelivery" data-toggle="tooltip"
+                                title="Actual Arrival Delivery Time from Telogis.">Actual Arrival Time</th>
+                            break;
+                        case StopColumns.PlannedDelivery:
+                            <th data-column-id="plannedDelivery" data-toggle="tooltip"
+                                title="Original scheduled delivery time for this stop from the plan/route master.">Planned Delivery</th>
+                            break;
+                        case StopColumns.ScheduledDelivery:
+                            <th data-column-id="scheduledDelivery" data-toggle="tooltip"
+                                title="New scheduled delivery time after any adjustments made prior to dispatch, such as a stop moved to a different route. This delivery time will eventually flow to Telogis (coming soon!).">Scheduled Delivery</th>
+                            break;
+                        case StopColumns.ScheduledOffset:
+                            <th data-column-id="scheduledOffSet" colspan="2">Scheduled Offset Hours / Cascade</th>
+                            break;
+                        case StopColumns.AdjustedDelivery:
+                            <th data-column-id="adjustedDelivery" data-toggle="tooltip"
+                                title="Any adjustments made to the route/stop just prior to, or after dispatch, such as delays from traffic, weather, or driver availability.">Adjusted Delivery</th>
+                            break;
+                        case StopColumns.AdjustedOffset:
+                            <th data-column-id="adjustedOffSet" colspan="2">Adjusted Offset Hours / Cascade</th>
+                            break;
+                        case StopColumns.Comment:
+                            <th data-column-id="comments">Comments</th>
+                            break;
+                        case StopColumns.StopStatus:
+                            <th data-column-id="stopStatus">Stop Status</th>
+                            break;
+                        case StopColumns.CurrentDriverName:
+                            <th data-column-id="currentDriverName">Current Driver Name</th>
+                            break;
+                        case StopColumns.OverallStatus:
+                            <th data-column-id="overallStatus">Status</th>
+                            break;
+                    }
+                }
+            </tr>
+            @{
+                var index = 0;
+                var stops = Model.Stops.OrderBy(s => s.StopNumber).ToList();
+                while (index < stops.Count())
+                {
+                    var stop = stops[index];
+                    var modifiedTypeColorStyle = "";
+                    switch (stop.RoutePlanModificationTypeId)
+                    {
+                        case 1: //1 is system removed
+                            modifiedTypeColorStyle = "tracker-stop-row-removed";
+                            break;
+                        case 2: //2 is system added
+                            modifiedTypeColorStyle = "tracker-stop-row-added";
+                            break;
+                        case 3: //3 is time change
+                            modifiedTypeColorStyle = "tracker-stop-row-modified";
+                            break;
+                        case 4: //4 is manual remove
+                            modifiedTypeColorStyle = "tracker-stop-row-removed";
+                            break;
+                        case 5: //5 is manual add
+                            modifiedTypeColorStyle = "tracker-stop-row-added";
+                            break;
+                        default:
+                            modifiedTypeColorStyle = "tracker-stop-row-default";
+                            break;
+                    }
+
+                    <tr id="@(stop.RouteId)-row-@(stop.StopNumber)" class="@modifiedTypeColorStyle tracker-stop-row"
+                        data-adjusted-stop-number="@stop.StopNumber"
+                        data-stop-index="@index"
+                        data-stop-modified-type="@stop.RoutePlanModificationTypeId"
+                        data-route-dispatch-time="@Model.DispatchTime"
+                        data-route-id="@stop.RouteId">
+
+                        @foreach (var col in columnToDisplayInOrder)
+                        {
+                            var scheduledOffsetHours = 0.0;
+                            var adjustedOffsetHours = 0.0;
+                            switch ((StopColumns)(int.Parse(col.ID)))
+                            {
+                                case StopColumns.StopNumber:
+                                    <td data-column-id="Stop">
+                                        @if (stop.StopNumber == 0 || stop.OrderId > 0)
+                                        {
+                                            if (Model.Stops.Where(s => s.RoutePlanModificationTypeId != 1 && s.RoutePlanModificationTypeId != 4).Count() > 1)
+                                            {
+                                                if (stop.IsEarlyOrLate == 1)
+                                                {
+                                                    <i class="fa fa-exclamation-circle fa-2x" style="color: red;" aria-hidden="true" title="LATE STOP"></i>@(stop.TelogisArrivalDeliveryDateTime.HasValue ? "    (" + string.Format("{0:0.00}", stop.TelogisArrivalDeliveryDateTime.Value.Subtract(stop.ScheduledDeliveryDateTime.Value).TotalHours) + " hours)" : "")
+                                                }
+                                                else if (stop.IsEarlyOrLate == -1)
+                                                {
+                                                    <i class="fa fa-clock-o fa-2x" aria-hidden="true" title="EARLY STOP"></i>@(stop.TelogisArrivalDeliveryDateTime.HasValue ? "    (" + string.Format("{0:0.00}", stop.TelogisArrivalDeliveryDateTime.Value.Subtract(stop.ScheduledDeliveryDateTime.Value).TotalHours) + " hours)" : "")
+                                                }
+                                                else
+                                                {
+                                                    <i class="fa fa-check-circle fa-2x" aria-hidden="true" title="ON-TIME STOP"></i>
+                                                }
+                                            }
+                                        }
+
+                                        @if (stop.MoveStatus == atm.services.models.MoveStatuses.Complete)
+                                        {
+                                            <i class="move-status fa fa-2x fa-check-square" data-route-plan-id="@stop.RoutePlanId" aria-hidden="true" title="stop move is completed"></i>
+                                        }
+                                        else if (stop.MoveStatus == atm.services.models.MoveStatuses.Pending)
+                                        {
+                                            <i class="move-status fa fa-2x fa-pause" data-route-plan-id="@stop.RoutePlanId" aria-hidden="true" title="pending stop move process ..."></i>
+                                        }
+                                        else if (stop.MoveStatus == atm.services.models.MoveStatuses.Error)
+                                        {
+                                            <i class="move-status fa fa-2x fa-exclamation" data-route-plan-id="@stop.RoutePlanId" aria-hidden="true" title="stop move process encounters error(s)"></i>
+                                        }
+                                        else if (stop.MoveStatus == atm.services.models.MoveStatuses.Cancelled)
+                                        {
+                                            <i class="move-status fa fa-2x fa-ban" data-route-plan-id="@stop.RoutePlanId" aria-hidden="true" title="stop move is cancelled"></i>
+                                        }
+                                        else if (stop.MoveStatus == atm.services.models.MoveStatuses.PreProcessing)
+                                        {
+                                            <i class="move-status fa fa-2x fa-square-o" data-route-plan-id="@stop.RoutePlanId" aria-hidden="true" title="initiating stop move process ..."></i>
+                                        }
+                                        else if (stop.MoveStatus == atm.services.models.MoveStatuses.PostProcessing)
+                                        {
+                                            <i class="move-status fa fa-2x fa-square" data-route-plan-id="@stop.RoutePlanId" aria-hidden="true" title="finishing stop move process ..."></i>
+                                        }
+                                        else if (stop.MoveStatus == atm.services.models.MoveStatuses.Processing)
+                                        {
+                                            <i class="move-status fa fa-2x fa-cog fa-spin" data-route-plan-id="@stop.RoutePlanId" aria-hidden="true" title="processing stop move ..."></i>
+                                        }
+                                        else if (stop.MoveStatus == atm.services.models.MoveStatuses.None)
+                                        {
+
+                                        }
+
+                                        &nbsp;&nbsp;
+                                        @stop.StopNumber @(stop.AddOnOrderCount > 0 ? "(" + stop.AddOnOrderCount.ToString() + " add-ons)" : "")
+                                    </td>
+                                    break;
+                                case StopColumns.BillTo:
+                                    <td data-column-id="BillTo">
+                                        @if (index > 0)
+                                        {
+                                            @((int)(stop.BillTo))
+                                        }
+                                    </td>
+                                    break;
+                                case StopColumns.ShipTo:
+                                    <td data-column-id="ShipTo">
+                                        @if (index > 0)
+                                        {
+                                            @((int)(stop.ShipTo))
+                                        }
+                                    </td>
+                                    break;
+                                case StopColumns.Customer:
+                                    <td data-column-id="Customer">
+                                        @stop.CustomerName
+                                    </td>
+                                    break;
+                                case StopColumns.Concept:
+                                    <td data-column-id="Concept">
+                                        @stop.Concept
+                                    </td>
+                                    break;
+                                case StopColumns.Street:
+                                    <td data-column-id="Street">
+                                        @stop.Address1 @stop.Address2
+                                    </td>
+                                    break;
+                                case StopColumns.City:
+                                    <td data-column-id="City">
+                                        @stop.City
+                                    </td>
+                                    break;
+                                case StopColumns.State:
+                                    <td data-column-id="State">
+                                        @stop.State
+                                    </td>
+                                    break;
+                                case StopColumns.Zip:
+                                    <td data-column-id="Zip">
+                                        @stop.Zip
+                                    </td>
+                                    break;
+                                case StopColumns.Phone:
+                                    <td data-column-id="Phone">
+                                        @{ var phone = "";
+                                            if (!string.IsNullOrEmpty(stop.Phone) && stop.Phone.Length == 10)
+                                            {
+                                                phone = "(" + stop.Phone.Substring(0, 3) + ") " + stop.Phone.Substring(3, 3) + "-" + stop.Phone.Substring(6, 4);
+                                            }
+                                            @Html.Raw(phone);
+                                        }
+                                    </td>
+                                    break;
+                                case StopColumns.Email:
+                                    <td data-column-id="Email">
+                                        @{
+                                            //Only create the email anchor element if the stop has an email address.
+                                            if (!(stop.EmailAddress.IsEmpty()))
+                                            {
+                                                <a href="mailto:@stop.EmailAddress">@stop.EmailAddress</a>
+                                            }
+                                        }
+                                    </td>
+                                    break;
+                                case StopColumns.OrderStatus:
+                                    <td data-column-id="OrderStatus" style="text-align:center">
+                                        @stop.OrderStatus
+                                    </td>
+                                    break; ;
+                                case StopColumns.OverallStatus:
+                                    <td data-column-id="OverallStatus" style="text-align:center">
+                                        @stop.OverallStatus
+                                    </td>
+                                    break;
+                                case StopColumns.WeightTotal:
+                                    <td>
+                                        @string.Format("{0:#,0}", stop.Weight)
+                                    </td>
+                                    break;
+                                case StopColumns.WeightFreezer:
+                                    <td>
+                                        @string.Format("{0:#,0}", stop.WeightFreezer)
+                                    </td>
+                                    break;
+                                case StopColumns.WeightCooler:
+                                    <td>
+                                        @string.Format("{0:#,0}", stop.WeightCooler)
+                                    </td>
+                                    break;
+                                case StopColumns.WeightDry:
+                                    <td>
+                                        @string.Format("{0:#,0}", stop.WeightDry)
+                                    </td>
+                                    break;
+                                case StopColumns.CubesTotal:
+                                    <td>
+                                        @string.Format("{0:#,0}", stop.Cubes)
+                                    </td>
+                                    break;
+                                case StopColumns.CubesFreezer:
+                                    <td>
+                                        @string.Format("{0:#,0}", stop.CubesFreezer)
+                                    </td>
+                                    break;
+                                case StopColumns.CubesCooler:
+                                    <td>
+                                        @string.Format("{0:#,0}", stop.CubesCooler)
+                                    </td>
+                                    break;
+                                case StopColumns.CubesDry:
+                                    <td>
+                                        @string.Format("{0:#,0}", stop.CubesDry)
+                                    </td>
+                                    break;
+                                case StopColumns.CasesTotal:
+                                    <td>
+                                        @string.Format("{0:#,0}", stop.Cases)
+                                    </td>
+                                    break;
+                                case StopColumns.CasesFreezer:
+                                    <td>
+                                        @string.Format("{0:#,0}", stop.CasesFreezer)
+                                    </td>
+                                    break;
+                                case StopColumns.CasesCooler:
+                                    <td>
+                                        @string.Format("{0:#,0}", stop.CasesCooler)
+                                    </td>
+                                    break;
+                                case StopColumns.CasesDry:
+                                    <td>
+                                        @string.Format("{0:#,0}", stop.CasesDry)
+                                    </td>
+                                    break;
+                                case StopColumns.ArrivalDelivery:
+                                    <td data-column-id="ArrivalDelivery">
+                                        @{
+                                            var arrivalTimeString = stop.TelogisArrivalDeliveryDateTime == null ? "" : stop.TelogisArrivalDeliveryDateTime.Value.ToString("MM/dd/yy hh:mm tt");
+                                        }
+                                        @Html.TextBox("stops[" + index + "].TelogisArrivalDeliveryDateTime", arrivalTimeString, new { @class = "arrival-date-time date-boxes", @readonly = "readonly" })
+                                    </td>
+                                    break;
+                                case StopColumns.PlannedDelivery:
+                                    <td data-column-id="PlannedDelivery">
+                                        @Html.TextBox("stops[" + index + "].PlannedDeliveryDateTime", stop.PlannedDeliveryDateTime.Value.ToString("MM/dd/yy hh:mm tt"), new { @class = "planned-date-time date-boxes", @readonly = "readonly" })
+                                    </td>
+                                    break;
+                                case StopColumns.ScheduledDelivery:
+                                    <td data-column-id="ScheduledDelivery" data-route-id="@stop.RouteId" data-stop-number="@stop.StopNumber" data-route-plan-id="@stop.RoutePlanId" style="white-space: nowrap">
+                                        @*If stop has been system remove or manually removed*@
+                                        @{if (stop.RoutePlanModificationTypeId == 1 || stop.RoutePlanModificationTypeId == 4)
+                                            {
+                                                //Display the Scheduled Delivery Date input as disabled because it's removed
+                                                <input type="date" id="stops_@(index)_ScheduledDeliveryDate" name="stops[@(index)].ScheduledDeliveryDate" value="@stop.ScheduledDeliveryDateTime.Value.ToString("yyyy-MM-dd")" readonly class="scheduled-date date-time-boxes date-boxes" data-toggle="tooltip" title="Can't update Scheduled Delivery b/c stop was removed." />
+                                                <input type="text" id="stops_@(index)_ScheduledDeliveryTime" name="stops[@(index)].ScheduledDeliveryTime" value="@stop.ScheduledDeliveryDateTime.Value.ToString("hh:mm tt")" readonly class="scheduled-time date-time-boxes time-boxes" data-toggle="tooltip" title="Can't update Scheduled Delivery b/c stop was removed." />
+                                            }
+                                            else
+                                            {
+                                                if ((stop.ScheduledDeliveryDateTime - stop.PlannedDeliveryDateTime).HasValue)
+                                                {
+                                                    scheduledOffsetHours = ((TimeSpan)(stop.ScheduledDeliveryDateTime - stop.PlannedDeliveryDateTime)).TotalHours;
+                                                }
+
+                                                //Display the Scheduled Delivery Date input as enabled
+                                                <input type="date" id="stops_@(index)_ScheduledDeliveryDate" name="stops[@(index)].ScheduledDeliveryDate" value="@stop.ScheduledDeliveryDateTime.Value.ToString("yyyy-MM-dd")" class="scheduled-date date-time-boxes date-boxes scheduled-date-time-enabled @(scheduledOffsetHours > 0.0 ? "route-stop-time-scheduled" : "")" />
+                                                <input type="text" id="stops_@(index)_ScheduledDeliveryTime" name="stops[@(index)].ScheduledDeliveryTime" value="@stop.ScheduledDeliveryDateTime.Value.ToString("hh:mm tt")" class="scheduled-time date-time-boxes time-boxes time-boxes-picker scheduled-date-time-enabled @(scheduledOffsetHours > 0.0 ? "route-stop-time-scheduled" : "")" />
+                                            }
+                                        }
+                                        <input type="hidden" name="stops[@(index)].ScheduledDeliveryDateTime" id="stops_@(index)_ScheduledDeliveryDateTime" class="scheduled-date-time" value="@stop.ScheduledDeliveryDateTime.Value.ToString("MM/dd/yy hh:mm tt")" />
+                                        <input type="hidden" name="stops[@(index)].OriginalScheduledDeliveryDateTime" id="stops_@(index)_OriginalScheduledDeliveryDateTime" class="original-scheduled-date-time" value="@stop.ScheduledDeliveryDateTime.Value.ToString("MM/dd/yy hh:mm tt")" />
+                                    </td>
+                                    break;
+                                case StopColumns.AdjustedDelivery:
+                                    <td data-column-id="AdjustedDelivery" data-route-id="@stop.RouteId" data-stop-number="@stop.StopNumber" data-route-plan-id="@stop.RoutePlanId" style="white-space: nowrap">
+                                        @*If stop has been system remove or manually removed*@
+                                        @{if (stop.RoutePlanModificationTypeId == 1 || stop.RoutePlanModificationTypeId == 4)
+                                            {
+                                                //Display the Adjusted Delivery Date input as disabled
+                                                <input type="date" id="stops_@(index)_AdjustedDeliveryDate" name="stops[@(index)].AdjustedDeliveryDate" value="@stop.AdjustedDeliveryDateTime.Value.ToString("yyyy-MM-dd")" readonly class="adjusted-date date-time-boxes date-boxes" data-toggle="tooltip" title="Can't update Adjusted Delivery b/c stop was removed." />
+                                                <input type="text" id="stops_@(index)_AdjustedDeliveryTime" name="stops[@(index)].AdjustedDeliveryTime" value="@stop.AdjustedDeliveryDateTime.Value.ToString("hh:mm tt")" readonly class="adjusted-time date-time-boxes time-boxes" data-toggle="tooltip" title="Can't update Adjusted Delivery b/c stop was removed." />
+                                            }
+                                            else
+                                            {
+                                                if ((stop.AdjustedDeliveryDateTime - stop.ScheduledDeliveryDateTime).HasValue)
+                                                {
+                                                    adjustedOffsetHours = ((TimeSpan)(stop.AdjustedDeliveryDateTime - stop.ScheduledDeliveryDateTime)).TotalHours;
+                                                }
+
+                                                //Display the Adjusted Delivery Date input as enabled
+                                                <input type="date" id="stops_@(index)_AdjustedDeliveryDate" name="stops[@(index)].AdjustedDeliveryDate" value="@stop.AdjustedDeliveryDateTime.Value.ToString("yyyy-MM-dd")" class="adjusted-date date-time-boxes date-boxes @(adjustedOffsetHours > 0.0 ? "route-stop-time-adjusted" : "")" />
+                                                <input type="text" id="stops_@(index)_AdjustedDeliveryTime" name="stops[@(index)].AdjustedDeliveryTime" value="@stop.AdjustedDeliveryDateTime.Value.ToString("hh:mm tt")" class="adjusted-time date-time-boxes time-boxes time-boxes-picker @(adjustedOffsetHours > 0.0 ? "route-stop-time-adjusted" : "")" />
+                                            }
+                                        }
+                                        <input type="hidden" name="stops[@index].AdjustedDeliveryDateTime" id="stops_@(index)_AdjustedDeliveryDateTime" class="adjusted-date-time" value="@stop.AdjustedDeliveryDateTime.Value.ToString("MM/dd/yy hh:mm tt")" />
+                                        <input type="hidden" name="stops[@index].OriginalAdjustedDeliveryDateTime" id="stops_@(index)_OriginalAdjustedDeliveryDateTime" class="original-adjusted-date-time" value="@stop.AdjustedDeliveryDateTime.Value.ToString("MM/dd/yy hh:mm tt")" />
+
+                                        @Html.HiddenFor(r => r.Stops[index].BillTo)
+                                        @Html.HiddenFor(r => r.Stops[index].ShipTo)
+                                        @Html.HiddenFor(r => r.Stops[index].Phone)
+
+                                        @Html.HiddenFor(r => r.Stops[index].RoutePlanId)
+                                        @Html.HiddenFor(r => r.Stops[index].RouteId)
+                                        @Html.HiddenFor(r => r.Stops[index].RouteNumber)
+                                        <input type="hidden" id="Stops[@index].AdjustedStopNumber" name="Stops[@index].AdjustedStopNumber" value="@stop.StopNumber" class="adjusted-stop-number" />
+                                        @Html.HiddenFor(r => r.Stops[index].RoutePlanModificationTypeId, new { @class = "route-plan-modification-type-id" })
+                                        <input type="hidden" id="Stops[@index].AdjustedRouteNumber" name="Stops[@index].AdjustedRouteNumber" value="@stop.RouteNumber" />
+                                        <input type="hidden" id="Stops[@index].EarlyLate" name="Stops[@index].EarlyLate" value="" />
+                                    </td>
+                                    break;
+                                case StopColumns.ScheduledOffset:
+                                    <td data-column-id="ScheduledOffsetHours">
+                                        @{
+                                            if ((stop.ScheduledDeliveryDateTime - stop.PlannedDeliveryDateTime).HasValue)
+                                            {
+                                                scheduledOffsetHours = ((TimeSpan)(stop.ScheduledDeliveryDateTime - stop.PlannedDeliveryDateTime)).TotalHours;
+                                            }
+
+                                            //If current stop was system removed or manually removed*
+                                            if (stop.RoutePlanModificationTypeId == 1 || stop.RoutePlanModificationTypeId == 4)
+                                            {
+                                                //Display the Offset Mins input as disabled
+                                                <input readonly type="number" step="30" style="width: 55px; margin-right: 15px;" data-stop-number="@stop.StopNumber"
+                                                       class="scheduled-minute-spinner" value="@string.Format("{0:0.0}", scheduledOffsetHours)" data-toggle="tooltip"
+                                                       title="Can't update Offset Minutes b/c stop was removed." />
+                                            }
+                                            else
+                                            {
+                                                //Display the  Offset Mins input as enabled
+                                                <input type="number" step="0.5" style="width: 55px; margin-right: 15px;" class="scheduled-minute-spinner" data-stop-number="@stop.StopNumber" value="@string.Format("{0:0.0}", scheduledOffsetHours)" />
+                                            }
+                                        }
+                                    </td>
+                                    <td style="text-align: left;">
+                                        @*If current stop was system removed or manually removed*@
+                                        @{
+                                            if (stop.RoutePlanModificationTypeId == 1 || stop.RoutePlanModificationTypeId == 4)
+                                            {
+                                                //Display the Cascade Changes button as disabled
+                                                <a id="@stop.RouteId-stop-@stop.StopNumber-ScheduledCascadeChanges" class="btn btn-light disabled">
+                                                    <i class="fa fa-level-down"></i>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                //Display the Cascade Changes button as enabled
+                                                <a id="@stop.RouteId-stop-@stop.StopNumber-ScheduledCascadeChanges" class="btn btn-info" onclick="javascript: cascadeChanges('@stop.RouteId-stop-@stop.StopNumber-ScheduledCascadeChanges');">
+                                                    <i class="fa fa-level-down"></i>
+                                                </a>
+                                            }
+                                        }
+                                    </td>
+                                    break;
+                                case StopColumns.AdjustedOffset:
+                                    <td data-column-id="AdjustedOffsetHours">
+                                        @{
+                                            if ((stop.AdjustedDeliveryDateTime - stop.ScheduledDeliveryDateTime).HasValue)
+                                            {
+                                                adjustedOffsetHours = ((TimeSpan)(stop.AdjustedDeliveryDateTime - stop.ScheduledDeliveryDateTime)).TotalHours;
+                                            }
+
+                                            // If current stop was system removed or manually removed
+                                            if (stop.RoutePlanModificationTypeId == 1 || stop.RoutePlanModificationTypeId == 4)
+                                            {
+                                                //Display the Offset Mins input as disabled
+                                                <input readonly type="number" step="30" style="width: 55px; margin-right: 15px;"
+                                                       class="adjusted-minute-spinner" value="@string.Format("{0:0.0}", adjustedOffsetHours)" data-toggle="tooltip"
+                                                       title="Can't update Offset Minutes b/c stop was removed." />
+                                            }
+                                            else
+                                            {
+                                                //Display the  Offset Mins input as enabled
+                                                <input type="number" step="0.5" style="width: 55px; margin-right: 15px;" class="adjusted-minute-spinner" data-stop-number="@stop.StopNumber" value="@string.Format("{0:0.0}", adjustedOffsetHours)" />
+                                            }
+                                        }
+                                    </td>
+                                    <td style="text-align: left;">
+                                        @*If current stop was system removed or manually removed*@
+                                        @{if (stop.RoutePlanModificationTypeId == 1 || stop.RoutePlanModificationTypeId == 4)
+                                            {
+                                                //Display the Cascade Changes button as disabled
+                                                //<input disabled type="checkbox" class="cascade-changes" />
+                                                <a id="@stop.RouteId-stop-@stop.StopNumber-AdjustedCascadeChanges" class="btn btn-light disabled">
+                                                    <i class="fa fa-level-down"></i>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                //Display the Cascade Changes button as enabled
+                                                //<input type="checkbox" class="cascade-changes" />
+                                                <a id="@stop.RouteId-stop-@stop.StopNumber-AdjustedCascadeChanges" class="btn btn-info" onclick="javascript: cascadeChanges('@stop.RouteId-stop-@stop.StopNumber-AdjustedCascadeChanges');">
+                                                    <i class="fa fa-level-down"></i>
+                                                </a>
+                                            }
+                                        }
+                                    </td>
+                                    break;
+                                case StopColumns.Comment:
+                                    <td data-column-id="Comments"style="white-space: nowrap">
+                                        @{if (stop.RoutePlanModificationTypeId == 1 || stop.RoutePlanModificationTypeId == 4)
+                                            {
+                                                @Html.TextAreaFor(r => r.Stops[index].LastCustomerCommunicationComment, htmlAttributes: new { @readonly = "readonly", @cols = "30", @rows = "1", @class = "stop-comment-readonly stop-comment", data_toggle = "tooltip", title = "Use Activity Log to add comment." })
+                                            }
+                                            else
+                                            {
+                                                @Html.TextAreaFor(r => r.Stops[index].LastCustomerCommunicationComment, htmlAttributes: new { @cols = "30", @rows = "1", @class = "stop-comment" })
+                                            }
+                                        }
+                                        <a href="javascript:void(0)" class="comment-dialog-trigger" data-stop-number="@stop.StopNumber" data-route-plan-id="@stop.RoutePlanId" data-bill-to="@((int)stop.BillTo)" data-ship-to="@((int)stop.ShipTo)" data-center-number="@stop.SygmaCenterNo">
+                                            <i class="fa fa-2x fa-comments-o " aria-hidden="true"></i>
+                                        </a>
+
+                                        @{
+                                            if (stop.RoutePlanModificationTypeId == 1 || stop.RoutePlanModificationTypeId == 4 || stop.RoutePlanModificationTypeId == 2 || stop.RoutePlanModificationTypeId == 5)
+                                            {
+                                                <a href="javascript:void(0)" class="moved-stop-dialog-trigger" data-route-id="@stop.RouteId" data-route-plan-id="@stop.RoutePlanId" data-stop-modified-type="@stop.RoutePlanModificationTypeId" data-center-number="@stop.SygmaCenterNo">
+                                                    <i class="fa fa-2x fa-info-circle " aria-hidden="true"></i>
+                                                </a>
+                                            }
+                                        }
+                                    </td>
+                                    break;
+                                case StopColumns.StopStatus:
+                                    <td data-column-id="StopStatus">
+                                        @stop.StopStatus
+                                    </td>
+                                    break;
+                                case StopColumns.CurrentDriverName:
+                                    <td data-column-id="CurrentDriverName">
+                                        @stop.CurrentDriverName
+                                    </td>
+                                    break;
+                            }
+                        }
+                    </tr>
+                    index = index + 1;
+                }
+            }
+        </tbody>
+        <tfoot>
+            <tr class="no-hover-color">
+                <td colspan="13"><hr /><input id="submit-route-@Model.RouteId-changes" class="btn btn-primary" type="button" onclick="javascript: submitStopChange('@Model.RouteId');" value="Submit" /><span style="display: none; margin-left: 15px;" class="operation-message"></span></td>
+            </tr>
+        </tfoot>
+    </table>
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>

@@ -1,0 +1,79 @@
+﻿@model atm.Models.CreateRouteCommentModelWithOptions
+<div class="row" style="width:95%;">
+    <div class="col-xs-4">
+        ROUTE: <br />
+        @Html.DropDownList("commentRouteNumber", Model.RouteList, "Select Route ...", new { @class = "form-control input-sm" })
+        <br /><br />
+    </div>
+    <div class="col-xs-offset-1 col-xs-3">
+        STOP NUMBER: <br />
+        <select id="commentStopNumber" class="form-control input-sm"></select>
+        <br /><br />
+    </div>
+    <div class="col-xs-1">
+        <br /><i style="margin-top:5px; margin-left: -20px;" class='fa fa-spinner fa-2x fa-spin loading hidden' aria-hidden='true'></i>
+    </div>
+</div>
+<div class="row" style="width:95%;">
+    <div class="col-xs-11">
+        COMMENT:<br />
+        <textarea style="max-width:600px; width:500px; height:100px;" id="comment-box" data-comment-id="0"
+                  data-ship-to="@Model.ShipTo" data-bill-to="@Model.BillTo" data-stop-number="@Model.StopNumber" data-screen="@Model.Screen"
+                  data-center-number="@Model.CenterNumber" data-route-plan-id="@Model.RoutePlanId" /><br /><br />
+    </div>
+</div>
+<div class="row" style="width:95%;">
+    <div class="col-xs-7">
+        CATEGORY:  &nbsp;
+        <select id="comment-category">
+            <option value="Customer Communication">Customer Communication</option>
+            <option value="Driver Communication">Driver Communication</option>
+            <option value="Stop Adjustment">Stop Adjustment</option>
+            <option value="Time Adjustment">Time Adjustment</option>
+        </select><br /><br />
+    </div>
+    <div class="col-xs-offset-1 col-xs-3">
+        IS INTERNAL: &nbsp;
+        <input type="checkbox" checked id="comment-is-internal" />
+    </div>
+</div>
+
+<script type="text/javascript">
+        $(document).ready(function () {
+            $("#commentRouteNumber").on("change", function () {
+                var routeId = $(this).val();
+
+                if (routeId !== "" && routeId !== "0") {
+                    $("#commentStopNumber").parent().next().find(".fa-spinner").removeClass("hidden");
+                    var url = "/routecomment/routestops?centerNumber=@Model.CenterNumber" + "&routeId=" + routeId;
+                    $.getJSON(url, null, function (data) {
+                        $("#commentStopNumber").empty();
+                        data = JSON.parse(data);
+                        var i = 0;
+                        while (i < data.length) {
+                            $("#commentStopNumber").append("<option value='" + data[i].RoutePlanId +
+                                "' data-bill-to='" + data[i].BillTo +
+                                "' data-ship-to='" + data[i].ShipTo + "'>" + data[i].StopNumber
+                                + "</option>");
+                            i++;
+                        }
+
+                        $("#commentStopNumber").change();
+                        $("#commentStopNumber").parent().next().find(".fa-spinner").addClass("hidden");
+                        $("#commonCreateCommentSaveButton").attr("disabled", false).removeClass("ui-state-disabled");
+                    });
+                } else {
+                    $("#commentStopNumber").empty();
+                    $('#comment-box').data('routePlanId', '');
+                    $("#commonCreateCommentSaveButton").attr("disabled", true).addClass("ui-state-disabled");
+                }
+            });
+
+            $("#commentStopNumber").on("change", function () {
+                $('#comment-box').data('stopNumber', $("#commentStopNumber option:selected").text());
+                $('#comment-box').data('routePlanId', $(this).val());
+                $('#comment-box').data('billTo', $("#commentStopNumber option:selected").data("billTo"));
+                $('#comment-box').data('shipTo', $("#commentStopNumber option:selected").data("shipTo"));
+            });
+        });
+</script>

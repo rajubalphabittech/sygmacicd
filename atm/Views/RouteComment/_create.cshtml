@@ -1,0 +1,24 @@
+﻿@model atm.Models.CreateRouteCommentModel
+<div class="row" style="width:95%;">
+    <div class="col-xs-11">
+        COMMENT:<br />
+        <textarea style="max-width:600px; width:500px; height:100px;" id="comment-box" data-comment-id="0"
+                  data-ship-to="@Model.ShipTo" data-bill-to="@Model.BillTo" data-stop-number="@Model.StopNumber" data-screen="@Model.Screen"
+                  data-center-number="@Model.CenterNumber" data-route-plan-id="@Model.RoutePlanId" /><br /><br />
+    </div>
+</div>
+<div class="row" style="width:95%;">
+    <div class="col-xs-7">
+        CATEGORY:  &nbsp;
+        <select id="comment-category">
+            <option value="Customer Communication">Customer Communication</option>
+            <option value="Driver Communication">Driver Communication</option>
+            <option value="Stop Adjustment">Stop Adjustment</option>
+            <option value="Time Adjustment">Time Adjustment</option>
+        </select><br /><br />
+    </div>
+    <div class="col-xs-offset-1 col-xs-3">
+        IS INTERNAL: &nbsp;
+        <input type="checkbox" checked id="comment-is-internal" />
+    </div>
+</div>

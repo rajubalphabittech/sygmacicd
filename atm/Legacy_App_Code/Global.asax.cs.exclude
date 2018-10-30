@@ -1,0 +1,90 @@
+using System;
+using System.Collections;
+using System.ComponentModel;
+using System.Web;
+using System.Web.SessionState;
+using SygmaFramework;
+using System.Collections.Generic;
+
+namespace SygmaIntranet 
+{
+	/// <summary>
+	/// Summary description for Global.
+	/// </summary>
+	public class Global : System.Web.HttpApplication
+	{
+		public Global()
+		{
+			
+		}	
+		
+		protected void Application_Start(Object sender, EventArgs e)
+		{
+
+		}
+ 
+		protected void Session_Start(Object sender, EventArgs e)
+		{
+
+		}
+
+        protected void Application_BeginRequest(Object sender, EventArgs e) {
+            if (Application["AppPath"] == null)
+                Application.Add("AppPath", GetAppPath());
+        }
+        private string GetAppPath() {
+            string appPath = Request.ApplicationPath.Trim();
+            if (!appPath.EndsWith("/"))
+                appPath += "/";
+            return appPath;
+        }
+
+		protected void Application_EndRequest(Object sender, EventArgs e)
+		{
+
+		}
+
+		protected void Application_AuthenticateRequest(Object sender, EventArgs e)
+		{
+
+		}
+
+		protected void Application_Error(Object sender, EventArgs e)
+		{
+			Exception LastError = Server.GetLastError();
+			List<string> parms = new List<string>();
+			try{
+				
+				parms.Add(string.Format("Client IP: {0}", Request.ServerVariables["REMOTE_ADDR"].ToString()));
+				parms.Add(string.Format("User: {0}", Request.ServerVariables["LOGON_USER"].ToString()));
+				parms.Add(string.Format("QueryString: {0}", Server.UrlDecode(Request.QueryString.ToString())));
+                parms.Add(string.Concat("Client IP: ", Request.UserHostAddress));
+                parms.Add(string.Concat("Url: ", Request.Url));
+                string referrer = (Request.UrlReferrer != null) ? Request.UrlReferrer.ToString() : "N/A";
+                parms.Add(string.Concat("Referrer: ", referrer));
+                parms.Add(string.Concat("Is Secure: ", Request.IsSecureConnection));
+                parms.Add(string.Format("Browser: {0} {1}", Request.Browser.Browser, Request.Browser.Version));
+                parms.Add(string.Concat("Is Crawler?: ", Request.Browser.Crawler));
+                parms.Add(string.Concat("OS: ", Request.Browser.Platform));
+			}catch{
+				parms = null;  //error occured so clear the parms
+			}
+			finally{
+				//create the ErrorHandler object, then Report error
+				ErrorHandler Handler = new ErrorHandler(LastError);
+			    Handler.ReportError(string.Format("{0}",Request.ServerVariables["SCRIPT_NAME"]),parms);
+			}
+		}
+
+		protected void Session_End(Object sender, EventArgs e)
+		{
+
+		}
+
+		protected void Application_End(Object sender, EventArgs e)
+		{
+
+		}
+	}
+}
+

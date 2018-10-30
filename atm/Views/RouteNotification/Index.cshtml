@@ -1,0 +1,57 @@
+﻿
+@section stylesheets{
+    @Styles.Render("~/Content/rt")
+}
+<div id="modalPopup" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div id="dataContent" class="modal-content"></div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="pageTitle">@ViewBag.Title</div>
+    <div class="row">
+        @*<div class="panel panel-default">
+                <div class="panel-heading" style="display:none">
+                </div>
+                <div class="panel-body" id="filterContainer">
+                    <form>
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-2 form-group form-group-sm">
+
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>*@
+    </div>
+    <div class="row">
+        <div class="col-xs-12 btn-toolbar" role="toolbar">
+            <div class="btn-group pull-right float-right" role="group">
+                <button type="button" class="btn btn-default send-notification" id="sendNotificationButton">Send Notifications</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="routeList" style="clear:both; margin-top:10px; height: 780px; overflow-y: scroll;"></div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    @Scripts.Render("~/bundles/routenotification")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            initializeRoutes();
+
+            initializeSendNotificationHandler();
+
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+}

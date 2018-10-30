@@ -1,0 +1,85 @@
+﻿@model SelectList
+
+<div class="container-fluid">
+    <div class="pageTitle">Route Tracker</div>
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading" style="display:none">
+            </div>
+            <div class="panel-body">
+                @Html.Partial("_filter", Model)
+            </div>
+        </div>
+    </div>
+    <div>
+        <h4><span id="totalRowsLabel" class="label label-default">Row Count: 0</span></h4>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="routeList" style="clear:both;"></div>
+        </div>
+    </div>
+</div>
+
+<div class="column-option-dialog">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <span>
+                COLUMN OPTIONS
+            </span>
+        </div>
+        <div class="panel-body">
+            <div class="column-option">
+                <label>
+                    <input type="checkbox" data-columnId="routeNumber" class="form-control" checked><span> Route #</span>
+                </label>
+            </div>
+            <div class="column-option">
+                <label>
+                    <input type="checkbox" data-columnId="routeName" class="form-control" checked><span> Route Name</span>
+                </label>
+            </div>
+            <div class="column-option">
+                <label>
+                    <input type="checkbox" data-columnId="stops" class="form-control" checked><span> Stops</span>
+                </label>
+            </div>
+            <div class="column-option">
+                <label>
+                    <input type="checkbox" data-columnId="dispatchTime" class="form-control" checked><span> Dispatch</span>
+                </label>
+            </div>
+            <div class="column-option">
+                <label>
+                    <input type="checkbox" data-columnId="totalweight" class="form-control" checked><span> Weight</span>
+                </label>
+            </div>
+            <div class="column-option">
+                <label>
+                    <input type="checkbox" data-columnId="totalcubes" class="form-control" checked><span> Cubes</span>
+                </label>
+            </div>
+            <div class="column-option">
+                <label>
+                    <input type="checkbox" data-columnId="totalcases" class="form-control" checked><span> Cases</span>
+                </label>
+            </div>
+            <div class="column-option">
+                <label>
+                    <input type="checkbox" data-columnId="routeOffset" class="form-control" checked><span> Offset Minutes / Cascade</span>
+                </label>
+            </div>
+            <div class="column-option">
+                <label>
+                    <input type="checkbox" data-columnId="routeStatus" class="form-control" checked><span> Route Status</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section scripts{
+    @Scripts.Render("~/Scripts/jquery-ui.min.js")
+    <script type="text/javascript" src="~/Scripts/routetracker.js"></script>
+}

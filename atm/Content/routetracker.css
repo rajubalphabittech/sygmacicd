@@ -1,0 +1,425 @@
+﻿/*
+    ROUTE Tracker Specific Styles
+*/
+
+.ui-widget-content {
+    border: 0px;
+    color: #1f1f1f;
+}
+
+.minWidthGridColumn-sm {
+    min-width: 60px;
+    overflow: hidden;
+}
+
+.minWidthGridColumn-med {
+    min-width: 100px;
+    overflow: hidden;
+}
+
+.minWidthGridColumn-lg {
+    min-width: 120px;
+    overflow: hidden;
+}
+
+.maxWidthGridColumn-med-wrapping {
+    max-width: 180px;
+    overflow-wrap: normal
+}
+
+.without_ampm::-webkit-datetime-edit-ampm-field {
+    display: none;
+}
+
+input[type=time]::-webkit-clear-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -o-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    margin: -10px;
+}
+
+input[type=date].route-tracker-filter {
+    width: 85px;
+    height: 18px;
+    padding: 2px 2px 2px 2px;
+    font-size: 0.9em;
+    display: inline-flex;
+    margin-top: 3px;
+}
+
+    input[type=date].route-tracker-filter::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        display: none;
+    }
+
+    input[type=date].route-tracker-filter::-webkit-clear-button {
+        -webkit-appearance: none;
+        display: none;
+    }
+
+select.form-control.route-tracker-filter.route-tracker-filter-date-range {
+    height: 20px;
+    font-size: 0.9em;
+    padding: 2px 2px 2px 2px;
+}
+
+/*Route Filter*/
+.rt-filter-label {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+/* --- */
+
+/* Route Tracker & Route Notification */
+#filterContainer.panel-body {
+    padding: 5px;
+}
+
+    #filterContainer.panel-body .form-group {
+        margin-bottom: 5px;
+    }
+
+#routes-table th {
+    font-size: 12px;
+}
+
+#routes-table td {
+    padding: 2px 4px;
+}
+
+    #routes-table td.route-info {
+        font-size: 1.5em;
+        background-color: #000;
+        color: #efefef;
+    }
+
+.stopTable {
+    background-color: white;
+}
+
+    .stopTable th {
+        font-size: 13px;
+        border-right: 1px solid #ddd;
+        background-color: #6c7ae0;
+        color: #fff;
+    }
+
+    .stopTable tbody {
+    }
+
+    .stopTable thead, tfoot {
+        display: block;
+        width: 100%;
+    }
+
+    .stopTable td, .stopTable th {
+        padding: 2px 8px;
+        vertical-align: middle;
+    }
+
+    .stopTable tr:hover, .tracker-stop-row-added:hover, .tracker-stop-row-default:hover, .tracker-stop-row-modified:hover, .tracker-stop-row-removed:hover {
+        background-color: #e8fce8 !important;
+    }
+
+    .stopTable .no-hover-color:hover {
+        background-color: #ffffff !important;
+    }
+
+    .stopTable .tracker-stop-row:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .stopTable .tracker-stop-row:nth-child(odd) {
+        background-color: #ffffff;
+    }
+
+    .stopTable .tracker-stop-row-added {
+        border: 2px #337ab7 dashed;
+    }
+
+    .stopTable .tracker-stop-row-removed {
+        border: 2px #d43f3a dashed;
+    }
+
+    .stopTable .tracker-stop-row-modified {
+        border: 2px #f0ad4e dashed;
+    }
+
+    .stopTable textarea {
+        resize: none;
+    }
+
+        .stopTable input[readonly], .stopTable textarea[readonly] {
+            border-color: darkgrey;
+            border-style: solid;
+            border-width: 1px;
+            background-color: rgb(235, 235, 228);
+            color: rgb(84, 84, 84);
+            padding: 2px 0px;
+        }
+
+    .stopTable .date-time-boxes {
+        padding: 2px 4px;
+    }
+
+        .stopTable .date-time-boxes::-webkit-clear-button {
+            -webkit-appearance: none;
+            display: none;
+        }
+
+    .stopTable .date-boxes {
+        width: 110px;
+    }
+
+    .stopTable .time-boxes {
+        width: 65px;
+    }
+
+.route-stop-time-adjusted {
+    background-color: #f9f1d6 !important;
+}
+
+.route-stop-time-scheduled {
+    background-color: #f9f1d6 !important;
+}
+
+.route-stop-time-dirty {
+    background-color: #ffcccc !important;
+}
+
+.stop-number-spinner {
+    text-align: center;
+    width: 45px;
+}
+
+.stop-number-duplicate {
+    background-color: yellow;
+}
+
+/* --- */
+
+/*Bootstrap Multi Select*/
+span.multiselect-native-select {
+    position: relative
+}
+
+    span.multiselect-native-select select {
+        border: 0 !important;
+        clip: rect(0 0 0 0) !important;
+        height: 1px !important;
+        margin: -1px -1px -1px -3px !important;
+        overflow: hidden !important;
+        padding: 0 !important;
+        position: absolute !important;
+        width: 1px !important;
+        left: 50%;
+        top: 30px
+    }
+
+.multiselect-container {
+    position: absolute;
+    list-style-type: none;
+    margin: 0;
+    padding: 0
+}
+
+    .multiselect-container .input-group {
+        margin: 5px
+    }
+
+    .multiselect-container > li {
+        padding: 0
+    }
+
+        .multiselect-container > li > a.multiselect-all label {
+            font-weight: 700
+        }
+
+        .multiselect-container > li.multiselect-group label {
+            margin: 0;
+            padding: 3px 20px 3px 20px;
+            height: 100%;
+            font-weight: 700
+        }
+
+        .multiselect-container > li.multiselect-group-clickable label {
+            cursor: pointer
+        }
+
+        .multiselect-container > li > a {
+            padding: 0
+        }
+
+            .multiselect-container > li > a > label {
+                margin: 0;
+                height: 100%;
+                cursor: pointer;
+                font-weight: 400;
+                padding: 3px 0 3px 30px
+            }
+
+                .multiselect-container > li > a > label.radio, .multiselect-container > li > a > label.checkbox {
+                    margin: 0
+                }
+
+                .multiselect-container > li > a > label > input[type=checkbox] {
+                    margin-bottom: 5px
+                }
+
+.btn-group > .btn-group:nth-child(2) > .multiselect.btn {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px
+}
+
+.form-inline .multiselect-container label.checkbox, .form-inline .multiselect-container label.radio {
+    padding: 3px 20px 3px 40px
+}
+
+.form-inline .multiselect-container li a label.checkbox input[type=checkbox], .form-inline .multiselect-container li a label.radio input[type=radio] {
+    margin-left: -20px;
+    margin-right: 0
+}
+/* End Multi Select */
+.inlineBlock {
+    display: inline-block;
+    position: relative;
+    zoom: 1;
+    *display: inline;
+}
+
+.column-option span {
+    vertical-align: super;
+    font-size: 1.1em;
+}
+
+.column-option .form-control {
+    display: inline-block;
+    width: auto;
+    height: auto;
+}
+
+.column-option-dialog {
+    width: 600px !important;
+    height: 480px !important;
+}
+
+.column-option-dialog-selection-heading {
+    font-weight: bold;
+    width: 200px;
+}
+
+.column-option-dialog-heading-spacer {
+    width: 60px;
+}
+
+.column-options-dialog-listbox {
+    height: 200px !important;
+    width: 200px;
+}
+
+.column-option-dialog-button {
+    width: 40px;
+    margin-bottom: 10px;
+}
+
+.column-option-dialog-move-button-frame {
+    width: 60px;
+    text-align: center;
+    vertical-align: top;
+}
+
+.modal-stop-dialog {
+    width: 90%;
+}
+
+.modal-stop-dialog-content {
+    /*overflow-y: auto;*/
+    overflow-x: auto;
+}
+
+#routes-table-popup td {
+    padding: 2px 4px;
+}
+
+#routes-table-popup th {
+    font-size: 12px;
+}
+
+.ui-timepicker-container {
+    position: absolute;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.ui-timepicker {
+    box-sizing: content-box;
+    display: block;
+    height: 205px;
+    list-style: none outside none;
+    margin: 0;
+    padding: 0 1px;
+    text-align: left;
+    font-size: 1em;
+    background: #fefefe;
+}
+
+.ui-timepicker-viewport {
+    box-sizing: content-box;
+    display: block;
+    height: 205px;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+    overflow-x: hidden; /* IE */
+}
+
+.ui-timepicker-standard {
+    /* overwrites .ui-widget */
+    /* overwrites .ui-widget-content */
+    background-color: #FFF;
+    border: 0px solid #888888;
+    /* overwrites .ui-menu */
+    margin: 0;
+    padding: 2px;
+}
+
+    .ui-timepicker-standard a {
+        border: 1px solid transparent;
+        display: block;
+        padding: 0;
+        text-decoration: none;
+    }
+
+    .ui-timepicker-standard .ui-state-hover {
+        /* overwrites .ui-state-hover */
+        background-color: #DADADA;
+        border: 1px solid #999;
+        font-weight: normal;
+    }
+
+    .ui-timepicker-standard .ui-menu-item {
+        /* overwrites .ui-menu and .ui-menu-item */
+        /*clear: left;
+       float: left;*/
+        margin: 0;
+        padding: 0;
+    }
+
+.ui-timepicker-corners,
+.ui-timepicker-corners .ui-corner-all {
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.ui-timepicker-hidden {
+    /* overwrites .ui-helper-hidden */
+    display: none;
+}
+
+.ui-timepicker-no-scrollbar .ui-timepicker {
+    border: 1px solid #888888
+}

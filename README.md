@@ -1,1 +1,1 @@
-# sygmacicd
+# sygma

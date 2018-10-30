@@ -1,0 +1,140 @@
+﻿@model atm.Models.RouteOverlayModel
+@{
+    var position = Model.Position.ToLowerInvariant();
+    var opposite = position == "left" ? "right" : "left";
+}
+<div id="@(position + "Route")" class="overlay overlay-@position">
+    <!-- Button to close the overlay navigation -->
+    <a href="javascript:void(0)" class="minimizebtn" onclick="minimizeRoute('@position')">
+        <i class="fa fa-window-minimize" aria-hidden="true"></i>
+    </a>
+    <a href="javascript:void(0)" class="restorebtn" onclick="restoreRoute('@position')">
+        <i class="fa fa-window-restore" aria-hidden="true"></i>
+    </a>
+    <a href="javascript:void(0)" class="closebtn" onclick="closeRoute('@position')">
+        <i class="fa fa-times" aria-hidden="true"></i>
+    </a>
+    <!-- Overlay content -->
+    <div class="overlay-content">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span>
+                    SEARCH / FILTER
+
+                    <a href="javascript:void(0)" class="clear-route-button" style="position: absolute; top: 1px; right: 25px;" onclick="clearRoutes('@position')" data-position="@position">
+                        <i class="fa fa-eraser pull-right" aria-hidden="true" title="clear selection and map"></i>
+                    </a>
+
+                    <a href="javascript:void(0)" class="filter-header" style="position: absolute; top: 1px; right: 5px;" data-position="@position">
+                        <i class="fa fa-chevron-up pull-@position" aria-hidden="true"></i>
+                    </a>
+                </span>
+            </div>
+            <div class="panel-body">
+                <div class="form-group form-group-sm">
+                    <label for="RouteTimingTypeSelector@(position)">Date Range</label>
+                    <select id="RouteTimingTypeSelector@(Model.Position)" data-position="@position" class="form-control route-filter-timing-type-selector">
+                        <option value="0">Select date range </option>
+                        <option value="4" selected>Tomorrow's Dispatch - @((((((int)DateTime.Today.DayOfWeek) + 1) % 7) + 1).ToString() + "00s")</option>
+                        <option value="5">Today's Dispatch - @((((((int)DateTime.Today.DayOfWeek)) % 7) + 1).ToString() + "00s")</option>
+                        <option value="6">Yesterday's Dispatch - @((DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? "7" : (((((int)DateTime.Today.DayOfWeek) - 1) % 7) + 1).ToString()) + "00s")</option>
+                        @*<option value="1">Weekending</option>*@
+                        <option value="2">Current Week</option>
+                        @*<option value="3">Last Week</option>*@
+                        <option value="7">Custom</option>
+                    </select>
+                </div>
+                <div class="form-group form-group-sm">
+                    <input type="date" class="form-control route-filter-dispatch-start-date" maxlength="10" data-position="@position" id="RouteDispatchStartDate@(Model.Position)" value="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")">
+                    to
+                    <input type="date" class="form-control route-filter-dispatch-end-date" maxlength="10" data-position="@position" id="RouteDispatchEndDate@(Model.Position)" value="@DateTime.Today.AddDays(2).ToString("yyyy-MM-dd")">
+                </div>
+                <div class="form-group form-group-sm" style="display:none;">
+                    <input type="date" class="form-control route-filter-weekending-date" maxlength="10" data-position="@position" id="RouteWeekendingDate@(Model.Position)" value="@DateTime.Today.ToString("yyyy-MM-dd")">
+                </div>
+                <div class="row form-group form-group-sm">
+                    <div class="col-xs-5">
+                        <label>Route Name/Number</label>
+                        <input type="text" class="form-control route-filter-name" data-position="@position" maxlength="20" id="RouteNameNumber@(position)" placeholder="Search...">
+                    </div>
+                    <div class="col-xs-7">
+                        <label>Bill To &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ship To</label><br />
+                        <input type="number" class="form-control route-filter-bill-to strictly-numeric-only" data-position="@position" maxlength="5" id="RouteStopBillTo@(position)" placeholder="12345">
+                        <input type="number" class="form-control route-filter-ship-to strictly-numeric-only" data-position="@position" maxlength="3" id="RouteStopShipTo@(position)" placeholder="123">
+                        <button type="button" class="btn btn-default btn-sm route-search-button" data-position="@position" id="RouteSearchButton@(position)">
+                            <span class="fa fa-search" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group form-group-sm">
+                    <label>Route Capacity</label>
+                    <div class="checkbox filter-category filter-weight">
+                        <input type="checkbox" data-position="@position" data-filtercategory="weight" class="form-control" id="RouteFilterWeightCheckbox@(position)" checked>
+                        <select data-position="@position" class="form-control route-filter-operator route-filter-weight-operator input-sm" id="RouteFilterWeightOperator@(position)">
+                            <option value="1" selected>&gt;</option>
+                            <option value="2">&ge;</option>
+                            <option value="3">&lt;</option>
+                            <option value="4">&le;</option>
+                        </select>
+                        <input type="number" class="form-control route-filter-threshold route-filter-weight input-sm" data-position="@position" maxlength="8" value="38000" id="RouteFilterWeight@(position)">
+                        <span>(WEIGHT in lbs)</span>
+
+                        @if (position == "left")
+                        {
+                        <button type="button" class="btn btn-warning manager-move-stop-button btn-sm pull-right" id="managerMoveStopButton" style="padding-bottom:10px; margin-left:5px;" title="Quick Stop Move">
+                            <span class="fa fa-arrows" aria-hidden="true"></span>
+                        </button>
+                        <button type="button" class="btn btn-success manager-add-comment-button btn-sm pull-right" id="managerAddCommentButton" style="padding-bottom:10px;" title="Quick Add Comment">
+                            <span class="fa fa-comments-o" aria-hidden="true"></span>
+                        </button>
+                        }
+                    </div>
+                    <div class="checkbox filter-category filter-cubes">
+                        <input type="checkbox" data-position="@position" data-filtercategory="cubes" class="form-control input-sm" id="RouteFilterCubesCheckbox@(position)">
+                        <select data-position="@position" class="form-control route-filter-operator route-filter-cubes-operator input-sm" id="RouteFilterCubesOperator@(position)">
+                            <option value="1" if;</option>
+                            <option value="2">&ge;</option>
+                            <option value="3">&lt;</option>
+                            <option value="4">&le;</option>
+                        </select>
+                        <input type="number" class="form-control route-filter-threshold route-filter-cubes input-sm" data-position="@position" maxlength="6" value="1800" id="RouteFilterCubes@(position)">
+                        <span>(CUBES)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="pull-left">ROUTES</div>
+                <div class="pull-right">
+                    SORT:
+                    <select id="RouteSorter@(Model.Position)" data-position="@position" class="route-sorter">
+                        <option value="1">Route Number</option>
+                        <option value="2">Route Name</option>
+                        <option value="3">Dispatch Time</option>
+                        <option value="4">Number of Stops</option>
+                        <option value="5">Duration</option>
+                        <option value="6" selected>Weight</option>
+                        <option value="7">Cubes</option>
+                        <option value="8">Cases</option>
+                        @{
+                            if (Model.Position == "right")
+                            {
+                                <option value="9">Proximity</option>
+                            }
+                        }
+                    </select>&nbsp;&nbsp;
+                    <span class="route-sorter-direction" data-position="@position">DESC</span>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="panel-body route-list" data-position="@position" id="routeList@(Model.Position)" style="clear:both;">
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay overlay-@position stop-list stop-list-is-collapsed" data-position="@position">
+
+    </div>
+</div>
